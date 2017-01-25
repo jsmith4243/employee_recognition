@@ -67,10 +67,34 @@ router.post('/register', function(req, res, next) {
 
   //db.run("INSERT INTO USERS(ID, USERNAME, PASSWORD) VALUES('2', 'user2', 'pass')");
   
-  var id = req.body.id; //for post
+  //db.run( "DROP TABLE Users" );  
+  
+  db.run( "CREATE TABLE if not exists Users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, isadmin INTEGER)" ); 
+  
+  var id = req.body.id; //for post 
+  
+  id = null; 
+  
+  var username = req.body.username;
+  
+  var password = req.body.password;
+  
+  var isadmin = 0;
+  
+  //db.prepare( "INSERT INTO USERS(ID, USERNAME, PASSWORD) VALUES(?, ?, ?)" ).run(id, username, password).finalize();
+  
+  var stmt = db.prepare( "INSERT INTO Users(id, username, password, isadmin) VALUES(?, ?, ?, ?)" );
+  
+  stmt.run(id, username, password, isadmin);
+  
+  stmt.finalize(); 
+  
+  
 
   
-  console.log("id is: " + id);
+  console.log("username is: " + username);
+  
+  console.log("password is: " + password);
   
   res.send("User Registered");	
 

@@ -36,7 +36,7 @@ router.get('/', function(req, res, next) {
 
   var id = req.params.id; //for get
   
-  console.log("req.params.operation: " + req.params.id);
+  console.log("req.params.operation : " + req.params.id);
   console.log("req.param('operation'): " + req.param('id'));
   console.log("req.body.id: " + req.body.id);
   

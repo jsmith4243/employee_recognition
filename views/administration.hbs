@@ -1,0 +1,102 @@
+<html lang="en">
+
+  <title>{{title}}</title>
+  
+  <link rel ='stylesheet' href='stylesheets/style.css' />
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  
+  
+  
+  <script>
+  
+
+  
+  </script>
+
+
+  <body>
+  
+    <h1>{{title}}</h1>
+   
+
+    
+    <div class="btn-group" role="group" aria-label="...">
+      <a href="http://localhost:3000/"><button type="button" class="btn btn-default">Log Out</button></a>
+      <a href="http://localhost:3000/userSettings"><button type="button" class="btn btn-default">User Settings</button></a>
+      
+    </div>
+    
+
+    
+    <br>
+    <br>
+    
+    <div> Create Award: </div>
+    
+    <br>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+    </div>
+    
+    <div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Award Type <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+      <li><a href="#">Employee Of The Month</a></li>
+      <li><a href="#">Employee Of The Week</a></li>
+      <li><a href="#">Community Builder Of The Month</a></li>
+      <li><a href="#">Hardest Worker Of The Month</a></li>
+      <li><a href="#">Most Punctual Employee Of The Month</a></li>
+
+      </ul>
+    </div>
+    
+    
+    
+<div class="container">
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>
+    </div>
+</div>
+    
+    
+    
+    
+    
+    <br>
+    <br>
+    
+    <div> Delete Award: </div>
+    
+    
+
+  </body>
+<html>

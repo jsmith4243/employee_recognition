@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var crypto = require('crypto');
 
 
 
@@ -10,29 +10,22 @@ var assert = require('assert');
 */
 
 
-
+var passport = require('passport');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('database.db');
+var db = require('../db/index');
+
+function hashPassword(password, salt) {
+  var hash = crypto.createHash('sha256');
+  hash.update(password);
+  hash.update(salt);
+  return hash.digest('hex');
+}
+
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-  /* //mongo
-  var url = 'mongodb://localhost:27017/test';
-  MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    console.log("Connected correctly to server");
-    db.close();
-  
-    
-
-    
-  });
-  */
-  
-  
- 
 
   var id = req.params.id; //for get
   
@@ -60,43 +53,47 @@ router.get('/administration', function(req, res, next) {
 });
 
 router.get('/awardDisplay', function(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  }
+  else {
+    res.send("Not authenticated");
+  }
+} , function(req, res) {
   res.render('awardDisplay', { title: 'awardDisplay' });
 });
 
+router.post('/login', passport.authenticate('local', { successRedirect: '/awardDisplay' }));
+
+router.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+})
+
 router.post('/register', function(req, res, next) {
 
-  //db.run("INSERT INTO USERS(ID, USERNAME, PASSWORD) VALUES('2', 'user2', 'pass')");
-  
-  //db.run( "DROP TABLE Users" );  
-  
-  db.run( "CREATE TABLE if not exists Users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, isadmin INTEGER)" ); 
-  
-  var id = req.body.id; //for post 
-  
-  id = null; 
+  // var id = req.body.id; //for post 
+  //id = null; 
   
   var username = req.body.username;
-  
   var password = req.body.password;
+  var salt = crypto.randomBytes(128).toString('base64');
   
-  var isadmin = 0;
-  
-  //db.prepare( "INSERT INTO USERS(ID, USERNAME, PASSWORD) VALUES(?, ?, ?)" ).run(id, username, password).finalize();
-  
-  var stmt = db.prepare( "INSERT INTO Users(id, username, password, isadmin) VALUES(?, ?, ?, ?)" );
-  
-  stmt.run(id, username, password, isadmin);
-  
+  var stmt = db.prepare( "INSERT INTO Users (username, password, salt) VALUES (?, ?, ?)" );
+  stmt.run(username, hashPassword(password, salt), salt, function(err, row) {
+    if (err) {
+      res.send("Error registering user" + err);  
+    }
+    else {
+    console.log("username: " + username);
+    console.log("salt: " + salt);
+    console.log("hash: " + password);
+    
+    res.send("User Registered");  
+    }
+  });
   stmt.finalize(); 
-  
-  
 
-  
-  console.log("username is: " + username);
-  
-  console.log("password is: " + password);
-  
-  res.send("User Registered");	
 
 });
 

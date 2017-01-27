@@ -79,8 +79,8 @@ router.post('/register', function(req, res, next) {
   var password = req.body.password;
   var salt = crypto.randomBytes(128).toString('base64');
   
-  var stmt = db.prepare( "INSERT INTO Users (username, password, salt) VALUES (?, ?, ?)" );
-  stmt.run(username, hashPassword(password, salt), salt, function(err, row) {
+  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created) VALUES (?, ?, ?, 0, ?)" );
+  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000), function(err, row) {
     if (err) {
       res.send("Error registering user" + err);  
     }

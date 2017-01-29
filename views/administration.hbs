@@ -19,6 +19,127 @@
   
   <script>
   
+  
+    $(document).ready(function()
+    {
+
+      $("#createuserbutton").click(function() {
+
+        var username = $("#username").val();
+        
+        var password = $("#password").val();
+        
+        var firstname = $("#firstname").val();
+        
+        var lastname = $("#lastname").val();
+      
+        var httpRequest = new XMLHttpRequest();
+      
+        if (!httpRequest) 
+        {
+          alert('Giving up : Cannot create an XMLHTTP instance');
+          return false;
+        }
+      
+        httpRequest.open('POST', '/register', true);
+
+        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        httpRequest.send("username="+username+"&password="+password+"&firstname="+firstname+"&lastname="+lastname); //post attributes here, id is a javascript variable appended
+
+   
+    
+
+      });
+      
+      $("#deleteuserbutton").click(function() {
+
+        var userid = $("#userid").val();
+      
+        var httpRequest = new XMLHttpRequest();
+      
+        if (!httpRequest) 
+        {
+          alert('Giving up : Cannot create an XMLHTTP instance');
+          return false;
+        }
+      
+        httpRequest.open('POST', '/deleteuser', true);
+
+        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        httpRequest.send("userid="+userid);
+
+   
+    
+
+      });
+      
+      var httpRequest = new XMLHttpRequest();
+      
+      if (!httpRequest) 
+      {
+          alert('Giving up : Cannot create an XMLHTTP instance');
+          return false;
+      }
+      
+      httpRequest.onreadystatechange = function(){
+      
+        if (httpRequest.readyState === XMLHttpRequest.DONE) 
+        {
+
+          if (httpRequest.status === 200) 
+          {
+          
+            //alert(httpRequest.responseText); //if its json you call JSON parse to get a json object which is same as javascript object
+            var arr = JSON.parse(httpRequest.responseText);
+            
+           $("#usertable").empty();
+           
+           for(i = 0; i < arr.length; i++)
+           {
+             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>" + "</tr>");
+           }
+            
+           //$("#usertable").append("<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>");
+            
+           /* 
+                      <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+          <td>button</td>
+          <td>button</td>
+          */
+            
+            console.log(">>>" + arr[0].username);
+            
+          } 
+      
+          else 
+      
+      
+          {
+      
+            alert('There was a problem with the request.');
+       
+          }
+          
+        }
+        
+      }
+
+
+      
+      httpRequest.open('POST', '/retrieveuserlist', true);
+      
+      httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      
+      httpRequest.send();
+      
+      
+
+    });
 
   
   </script>
@@ -36,7 +157,100 @@
       
     </div>
     
+    <br>
+    <br>
+    
+    <h2>Create User:</h2>
+    
+    <br>
+    <br>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="User Name" aria-describedby="basic-addon1" id="username">
+    </div>
+    
+    <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" id="password">
+    </div>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="firstname">
+    </div>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" id="lastname">
+    </div>
+    
+    <label class="control-label">User Signature Image File</label>
+    <input id="input-1" type="file" class="file">
 
+    <button type="button" class="btn btn-default" id="createuserbutton">Create User</button>
+
+
+
+
+    <br>
+    <br>
+    
+    <h2>Delete User:</h2>
+    
+    <br>
+    <br>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="User Id" aria-describedby="basic-addon1" id="userid">
+      
+    </div>
+    
+    <button type="button" class="btn btn-default" id="deleteuserbutton">Delete User</button>
+    
+    <br>
+    <br>
+    
+    <h2>User List:</h2>
+    
+    <br>
+    <br>
+    
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Id #</th>
+          <th>User Name</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="usertable">
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+          <td>button</td>
+          <td>button</td>
+        </tr>
+
+      </tbody>
+    </table>
+    
+    <br>
+    <br>
+    <h2>Edit User:</h2>
+    <br>
+    <br>
+    
 
   </body>
 <html>

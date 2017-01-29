@@ -9,6 +9,9 @@ var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 */
 
+var nodemailer = require('nodemailer');
+
+
 
 var passport = require('passport');
 var sqlite3 = require('sqlite3').verbose();
@@ -170,6 +173,103 @@ router.post('/retrieveuserlist', function(req, res, next) {
   
   
 
+
+
+});
+
+router.post('/sendemail', function(req, res, next) {
+
+  console.log("/sendemail  post request received.");
+  
+  // create reusable transporter object using the default SMTP transport
+  //using account recognitionprog with password pa1234ss at gmail
+  var transporter = nodemailer.createTransport('smtps://recognitionprog%40gmail.com:pa1234ss@smtp.gmail.com');
+  
+  // setup e-mail data with unicode symbols
+  var mailOptions = {
+    from: '"Fred Foo ?" <foo@blurdybloop.com>', // sender address
+    to: 'recognitionprog@gmail.com, baz@blurdybloop.com', // list of receivers
+    subject: 'Hello ✔', // Subject line
+    text: 'Hello world ?', // plaintext body
+    html: '<b>Hello world ?</b>', // html body
+    
+    
+    attachments: [
+        {   // utf-8 string as an attachment
+            filename: 'text1.txt',
+            content: 'hello world!'
+        }
+    ]
+    
+/*
+    attachments: [
+        {   // utf-8 string as an attachment
+            filename: 'text1.txt',
+            content: 'hello world!'
+        },
+        {   // binary buffer as an attachment
+            filename: 'text2.txt',
+            content: new Buffer('hello world!','utf-8')
+        },
+        {   // file on disk as an attachment
+            filename: 'text3.txt',
+            path: '/path/to/file.txt' // stream this file
+        },
+        {   // filename and content type is derived from path
+            path: '/path/to/file.txt'
+        },
+        {   // stream as an attachment
+            filename: 'text4.txt',
+            content: fs.createReadStream('file.txt')
+        },
+        {   // define custom content type for the attachment
+            filename: 'text.bin',
+            content: 'hello world!',
+            contentType: 'text/plain'
+        },
+        {   // use URL as an attachment
+            filename: 'license.txt',
+            path: 'https://raw.github.com/nodemailer/nodemailer/master/LICENSE'
+        },
+        {   // encoded string as an attachment
+            filename: 'text1.txt',
+            content: 'aGVsbG8gd29ybGQh',
+            encoding: 'base64'
+        },
+        {   // data uri as an attachment
+            path: 'data:text/plain;base64,aGVsbG8gd29ybGQ='
+        },
+        {
+            // use pregenerated MIME node
+            raw: 'Content-Type: text/plain\r\n' +
+                 'Content-Disposition: attachment;\r\n' +
+                 '\r\n' +
+                 'Hello world!'
+        }
+    ]
+*/
+
+    
+    
+    
+    
+  };
+  
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        return console.log(error);
+    }
+    console.log('Message sent: ' + info.response);
+  });
+
+  // var id = req.body.id; //for post 
+  //id = null; 
+  
+  console.log("userid is: " + req.body.userid);
+  var userid = req.body.userid;
+  
+  res.send("mail sent");
 
 
 });

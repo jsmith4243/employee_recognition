@@ -55,6 +55,10 @@ router.get('/administration', function(req, res, next) {
   res.render('administration', { title: 'Administration' });
 });
 
+router.get('/chart', function(req, res, next) {
+  res.render('chart', { title: 'chart' });
+});
+
 router.get('/awardDisplay', function(req, res, next) {
   if (req.isAuthenticated()) {
     next();

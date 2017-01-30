@@ -116,6 +116,22 @@ router.post('/deleteuser', function(req, res, next) {
   //id = null; 
   
   var userid = req.body.userid;
+  
+  var stmt = db.prepare( "DELETE FROM users WHERE id = ?" );
+  
+  stmt.run(userid, function(err, row) {
+    if (err) {
+      res.send("Error deleting user" + err);  
+    }
+    else {
+    console.log("id: " + userid);
+
+    
+    res.send("User deleted");  
+    
+    }
+  });
+  stmt.finalize(); 
 
 
 });
@@ -123,11 +139,34 @@ router.post('/deleteuser', function(req, res, next) {
 router.post('/edituser', function(req, res, next) {
   console.log("User edit post request received.");
   console.log("userid is: " + req.body.userid);
+  console.log("username is: " + req.body.username);
+  console.log("firstname is: " + req.body.firstname);
+  console.log("lastname is: " + req.body.lastname);
 
   // var id = req.body.id; //for post 
   //id = null; 
   
   var userid = req.body.userid;
+  var username = req.body.username;
+  var firstname = req.body.firstname;
+  var lastname = req.body.lastname;
+  
+  //var stmt = db.prepare( "UPDATE users SET username = ?, firstname = ?, lastname = ? WHERE id = ?" );
+  var stmt = db.prepare( "UPDATE users SET username = ? WHERE id = ?" );
+  
+  stmt.run(username, userid, function(err, row) {
+    if (err) {
+      res.send("Error editing user" + err);  
+    }
+    else {
+    console.log("id: " + userid);
+
+    
+    res.send("User edited");  
+    
+    }
+  });
+  stmt.finalize(); 
 
 
 });

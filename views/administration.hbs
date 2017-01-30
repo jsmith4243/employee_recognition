@@ -22,6 +22,9 @@
   
     $(document).ready(function()
     {
+    
+    
+
 
       $("#createuserbutton").click(function() {
 
@@ -96,10 +99,108 @@
             
            $("#usertable").empty();
            
+           var examplefirstname = "examplefirstname";
+           var examplelastname = "examplelastname";
+           
+           
            for(i = 0; i < arr.length; i++)
            {
-             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>" + "</tr>");
+             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + examplefirstname + "</td>" + "<td>" + examplelastname + "</td>" + "<td><button type=\"button\" class=\"btn btn-default tableeditbutton\"  userid=\"" + arr[i].id + "\"   id=\"tableeditbutton\" username=\"" + arr[i].username + "\" firstname=\"" + arr[i].firstname + "\" lastname=\"" + arr[i].lastname + "\" >Edit</button></td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
            }
+           
+           $(".tabledeletebutton").click(function() {
+
+             console.log("tabledeletebutton clicked");
+             
+             var id;
+             
+             id = $(this).attr("userid");
+             
+             console.log("userid is: " + id);
+             
+             
+             
+             var httpRequest = new XMLHttpRequest();
+      
+             if (!httpRequest) 
+             {
+               alert('Giving up : Cannot create an XMLHTTP instance');
+               return false;
+             }
+      
+             httpRequest.open('POST', '/deleteuser', true);
+
+             httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+             httpRequest.send("userid="+id);
+
+   
+    
+
+           });
+           
+           $(".tableeditbutton").click(function() {
+
+             console.log("tabledeletebutton clicked");
+             
+             var id;
+             
+             id = $(this).attr("userid");
+             
+             console.log("userid is: " + id);
+             
+             
+             var username = $(this).attr("username");
+             
+             $("#usernameedit").val( username );
+             
+             
+             var firstname = $(this).attr("firstname");
+             
+             $("#firstnameedit").val( firstname );
+             
+             
+             var lastname = $(this).attr("lastname");
+             
+             $("#lastnameedit").val( lastname );
+             
+             $("#usereditbutton").attr("id",id);
+
+             
+             
+      
+
+    
+
+           });
+           
+           $("#usereditbutton").click(function() {
+           
+             var httpRequest = new XMLHttpRequest();
+      
+             if (!httpRequest) 
+             {
+               alert('Giving up : Cannot create an XMLHTTP instance');
+               return false;
+             }
+           
+             httpRequest.open('POST', '/edituser', true);
+
+             httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+             
+             var usernametosend = $("#usernameedit").val();
+             var firstnametosend = $("#firstnameedit").val();
+             var lastnametosend = $("#lastnameedit").val();
+             
+             var id;
+             id = $(this).attr("id");
+             
+             //httpRequest.send("userid="+ id);
+             httpRequest.send("userid="+ id + "&username=" + usernametosend + "&firstname=" + firstnametosend  + "&lastname=" + lastnametosend );
+
+                   
+           
+           });
             
            //$("#usertable").append("<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>");
             
@@ -250,6 +351,35 @@
     <h2>Edit User:</h2>
     <br>
     <br>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="User Name" aria-describedby="basic-addon1" id="usernameedit">
+    </div>
+    
+    <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" id="passwordedit">
+    </div>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="firstnameedit">
+    </div>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" id="lastnameedit">
+    </div>
+    
+    <label class="control-label">User Signature Image File</label>
+    <input id="input-1edit" type="file" class="file">
+
+    <button type="button" class="btn btn-default" id="usereditbutton">Edit User</button>
+
     
 
   </body>

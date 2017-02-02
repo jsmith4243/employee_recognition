@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
       res.redirect('/administration');
     }
     else {
-      res.redirect('/awardDisplay');
+      res.render('awardDisplay', { title: 'awardDisplay' });
     }
   }
   else {
@@ -60,18 +60,7 @@ router.get('/chart', function(req, res, next) {
   res.render('chart', { title: 'chart' });
 });
 
-router.get('/awardDisplay', function(req, res, next) {
-  if (req.isAuthenticated() && req.user.is_admin === 0) {
-    next();
-  }
-  else {
-    res.send("Not authenticated");
-  }
-} , function(req, res) {
-  res.render('awardDisplay', { title: 'awardDisplay' });
-});
-
-router.post('/login', passport.authenticate('user-local', { successRedirect: '/awardDisplay' }));
+router.post('/login', passport.authenticate('user-local', { successRedirect: '/' }));
 
 router.post('/admin-login', passport.authenticate('admin-local', { successRedirect: '/administration' }));
 

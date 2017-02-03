@@ -33,10 +33,16 @@ router.get('/', function(req, res, next) {
       res.redirect('/administration');
     }
     else {
-      res.render('awardDisplay', { title: 'awardDisplay' });
+      classes = [];
+      db.all('SELECT * FROM classes', function(err, rows) {
+        console.log(rows);
+        res.render('awardDisplay', { title: 'Awards', user: req.user.username, classes: rows });
+      });
+
     }
   }
   else {
+
     res.render('index', { title: 'Employee Recognition' });
   }
 });

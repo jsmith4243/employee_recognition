@@ -79,23 +79,28 @@
     
     <h2> Sent Awards: </h2>
     
-    <table>
-    {{#each entries}}
-    <tr>
-    <td>{{this.name}}</td>
-    <td>{{this.recipient}}</td>
-    <td>{{this.email}}</td>
-    <td>{{this.granted}}</td>
-    </tr>
-    {{/each}}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Recipient</th>
+          <th>Email</th>
+          <th>Date</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each entries}}
+          <tr>
+            <td>{{this.name}}</td>
+            <td>{{this.recipient}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.granted}}</td>
+            <td><button type="button" class="btn btn-danger">Delete</button></td>
+          </tr>
+        {{/each}}
+      </tbody>
     </table>
-    
-    <div class="btn-group" role="group" aria-label="...">
-      <button type="button" class="btn btn-default">Delete</button>
-
-    </div>
-    
-
 
   </body>
 <html>

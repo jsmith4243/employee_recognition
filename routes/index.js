@@ -33,10 +33,11 @@ router.get('/', function(req, res, next) {
       res.redirect('/administration');
     }
     else {
-      classes = [];
-      db.all('SELECT * FROM classes', function(err, rows) {
-        console.log(rows);
-        res.render('awardDisplay', { title: 'Awards', user: req.user.username, classes: rows });
+      db.all('SELECT * FROM classes', function(err, classes) {
+        db.all('SELECT * FROM entries LEFT JOIN classes c ON class = c.id WHERE user = ?', req.user.id, function(err, entries) {
+          console.log(entries);
+          res.render('awardDisplay', { title: 'Awards', user: req.user.username, classes: classes, entries: entries });
+        });
       });
 
     }

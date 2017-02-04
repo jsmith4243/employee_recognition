@@ -77,15 +77,24 @@
     </div>
     
     
-<!--     <h2> Sent Awards: </h2>
+    <h2> Sent Awards: </h2>
     
-    
+    <table>
+    {{#each entries}}
+    <tr>
+    <td>{{this.name}}</td>
+    <td>{{this.recipient}}</td>
+    <td>{{this.email}}</td>
+    <td>{{this.granted}}</td>
+    </tr>
+    {{/each}}
+    </table>
     
     <div class="btn-group" role="group" aria-label="...">
       <button type="button" class="btn btn-default">Delete</button>
 
     </div>
-     -->
+    
 
 
   </body>

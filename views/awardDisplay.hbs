@@ -18,6 +18,12 @@
   <script type="text/javascript" src="/js/moment.min.js"></script>
   <link rel="stylesheet" href="/stylesheets/bootstrap-datetimepicker.min.css">
   <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      $('#datetimepicker1').datetimepicker();
+    });
+  </script>
   </head>
 
 
@@ -33,52 +39,56 @@
     </div>
     
     <h2>Create Award:</h2>
-    
-    <div class="form-group">
-      <label for="name">Recipient name:</label>
-      <input type="text" class="form-control" name="name">
-    </div>
-    <div class="form-group">
-      <label for="email">Recipient email:</label>
-      <input type="text" class="form-control" name="email">
-    </div>
-    <div class="form-group">
-      <label for="class">Award type:</label>
-      <select class="form-control" id="class">
-        {{#each classes}}
-        <option>{{this.name}}</option>
-        {{/each}}
-      </select>
-    </div>
+    <div class="panel panel-default">
 
-    <div class="container">
-      <div class="row">
-        <div class='col-sm-6'>
-          <div class="form-group">
-            <div class='input-group date' id='datetimepicker1'>
-              <input type='text' class="form-control" />
-              <span class="input-group-addon">
-                <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-            </div>
+    <div class="panel-body">
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="name">Recipient name:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" name="name" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="email">Recipient email:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" name="email" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="class">Award type:</label>
+        <div class="col-sm-9">
+          <select class="form-control" id="class">
+            {{#each classes}}
+            <option>{{this.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="date">Date:</label>
+        <div class="col-sm-9">
+          <div class='input-group date' id='datetimepicker1'>
+            <input type='text' class="form-control" name="date" required />
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+            </span>
           </div>
         </div>
-        <script type="text/javascript">
-          $(function () {
-            $('#datetimepicker1').datetimepicker();
-          });
-        </script>
       </div>
+      <div class="pull-right">
+        <button type="button" class="btn btn-default">Preview Award</button>
+        <button type="submit" class="btn btn-primary">Send Award</button>
+        </div>
+    </form>
     </div>
-
-
-    <div class="btn-group" role="group" aria-label="...">
-      <button type="button" class="btn btn-default">Create</button>
     </div>
     
     
     <h2> Sent Awards: </h2>
-    
+        <div class="panel panel-default">
+
+    <div class="panel-body">
     <table class="table">
       <thead>
         <tr>
@@ -101,6 +111,8 @@
         {{/each}}
       </tbody>
     </table>
+    </div>
+    </div>
 
   </body>
 <html>

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
-
+var award = require("../award/index");
 
 
 /* //mongo
@@ -105,6 +105,12 @@ router.post('/register', function(req, res, next) {
   stmt.finalize(); 
 
 
+});
+
+router.get('/test-download', function(req, res) {
+  res.setHeader('Content-disposition', 'attachment; filename=award.pdf');
+  res.setHeader('Content-type', 'application/pdf');
+  award.test().pipe(res);
 });
 
 router.post('/deleteuser', function(req, res, next) {

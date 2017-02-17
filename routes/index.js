@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
-
+var award = require("../award/index");
 
 
 /* //mongo
@@ -28,23 +28,24 @@ function hashPassword(password, salt) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  if (req.user) {
+    if (req.user.is_admin === 1) {
+      res.redirect('/administration');
+    }
+    else {
+      db.all('SELECT * FROM classes', function(err, classes) {
+        db.all('SELECT * FROM entries LEFT JOIN classes c ON class = c.id WHERE user = ?', req.user.id, function(err, entries) {
+          console.log(entries);
+          res.render('awardDisplay', { title: 'Awards', user: req.user.username, classes: classes, entries: entries });
+        });
+      });
 
+    }
+  }
+  else {
 
-  var id = req.params.id; //for get
-  
-  console.log("req.params.operation : " + req.params.id);
-  console.log("req.param('operation'): " + req.param('id'));
-  console.log("req.body.id: " + req.body.id);
-  
-  console.log("id is: " + id);
-
-
-
-
-  res.render('index', { title: 'Expressxxx' });
-  
-  
-  
+    res.render('index', { title: 'Employee Recognition' });
+  }
 });
 
 router.get('/userRegistration', function(req, res, next) {
@@ -52,6 +53,13 @@ router.get('/userRegistration', function(req, res, next) {
 });
 
 router.get('/administration', function(req, res, next) {
+  if (req.isAuthenticated() && req.user.is_admin === 1) {
+    next();
+  }
+  else {
+    res.render('adminLogin', { title: 'Administration Login' });
+  }
+} , function(req, res) {
   res.render('administration', { title: 'Administration' });
 });
 
@@ -59,18 +67,9 @@ router.get('/chart', function(req, res, next) {
   res.render('chart', { title: 'chart' });
 });
 
-router.get('/awardDisplay', function(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  }
-  else {
-    res.send("Not authenticated");
-  }
-} , function(req, res) {
-  res.render('awardDisplay', { title: 'awardDisplay' });
-});
+router.post('/login', passport.authenticate('user-local', { successRedirect: '/' }));
 
-router.post('/login', passport.authenticate('local', { successRedirect: '/awardDisplay' }));
+router.post('/admin-login', passport.authenticate('admin-local', { successRedirect: '/administration' }));
 
 router.get('/logout', function(req, res) {
   req.logout();
@@ -106,6 +105,12 @@ router.post('/register', function(req, res, next) {
   stmt.finalize(); 
 
 
+});
+
+router.get('/test-download', function(req, res) {
+  res.setHeader('Content-disposition', 'attachment; filename=award.pdf');
+  res.setHeader('Content-type', 'application/pdf');
+  award.test().pipe(res);
 });
 
 router.post('/deleteuser', function(req, res, next) {

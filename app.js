@@ -32,14 +32,28 @@ function hashPassword(password, salt) {
   return hash.digest('hex');
 }
 
-passport.use(new LocalStrategy(
+passport.use('user-local', new LocalStrategy(
   function(username, password, done) {
-    db.get('SELECT salt FROM users WHERE username = ?', username, function(err, row) {
+    db.get('SELECT salt FROM users WHERE username = ? AND is_admin = 0', username, function(err, row) {
       if (!row) return done(null, false);
       console.log("salt: " + row.salt);
       var hash = hashPassword(password, row.salt);
       console.log("hash: " + hash);
-      db.get('SELECT username, id FROM users WHERE username = ? AND password = ?', username, hash, function(err, row) {
+      db.get('SELECT username, id FROM users WHERE username = ? AND is_admin = 0 AND password = ?', username, hash, function(err, row) {
+        if (!row) return done(null, false);
+        return done(null, row);
+      });
+    });
+  }));
+
+passport.use('admin-local', new LocalStrategy(
+  function(username, password, done) {
+    db.get('SELECT salt FROM users WHERE username = ? AND is_admin = 1', username, function(err, row) {
+      if (!row) return done(null, false);
+      console.log("salt: " + row.salt);
+      var hash = hashPassword(password, row.salt);
+      console.log("hash: " + hash);
+      db.get('SELECT username, id FROM users WHERE username = ? AND is_admin = 1 AND password = ?', username, hash, function(err, row) {
         if (!row) return done(null, false);
         return done(null, row);
       });
@@ -51,7 +65,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  db.get('SELECT id, username FROM users WHERE id = ?', id, function(err, row) {
+  db.get('SELECT id, username, is_admin FROM users WHERE id = ?', id, function(err, row) {
     if (!row) return done(null, false);
     return done(null, row);
   });

@@ -20,9 +20,56 @@
   <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
 
   <script type="text/javascript">
+
     $(function () {
       $('#datetimepicker1').datetimepicker();
     });
+
+
+    $(document).ready(function()
+    {
+      $('#sendawardbutton').click(function() {
+
+        console.log("sendawardbutton clicked");
+
+        var name = $("#name").val();
+
+        var email = $("#email").val();
+
+        var awardtype = $("#awardtype").val(); //DOESNT WORK <<<<
+
+        var date = $("#date").val(); //DOESNT WORK <<<<
+
+        console.log("name is: " + name);
+
+        console.log("email is: " + email);
+
+        console.log("awardtype is: " + awardtype);
+
+        console.log("date is: " + date);
+
+        var httpRequest = new XMLHttpRequest();
+      
+        if (!httpRequest) 
+        {
+          alert('Giving up : Cannot create an XMLHTTP instance');
+          return false;
+        }
+      
+        httpRequest.open('POST', '/sendemail', true);
+
+        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        httpRequest.send("name="+name+"&email="+email+"&awardtype="+awardtype+"&date="+date);
+
+
+      }); 
+
+    });
+
+    
+
+
   </script>
   </head>
 
@@ -46,19 +93,19 @@
       <div class="form-group">
         <label class="control-label col-sm-3" for="name">Recipient name:</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" name="name" required>
+          <input type="text" class="form-control" name="name" id="name" required>
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-3" for="email">Recipient email:</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" name="email" required>
+          <input type="text" class="form-control" name="email" id="email" required>
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-3" for="class">Award type:</label>
         <div class="col-sm-9">
-          <select class="form-control" id="class">
+          <select class="form-control" id="class" id="awardtype">
             {{#each classes}}
             <option>{{this.name}}</option>
             {{/each}}
@@ -77,8 +124,8 @@
         </div>
       </div>
       <div class="pull-right">
-        <button type="button" class="btn btn-default">Preview Award</button>
-        <button type="submit" class="btn btn-primary">Send Award</button>
+        <button type="button" class="btn btn-default" >Preview Award</button>
+        <button type="submit" class="btn btn-primary" id="sendawardbutton">Send Award</button>
         </div>
     </form>
     </div>

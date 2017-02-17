@@ -228,6 +228,12 @@ router.post('/retrieveuserlist', function(req, res, next) {
 router.post('/sendemail', function(req, res, next) {
 
   console.log("/sendemail  post request received.");
+
+
+  console.log("name is: " + req.body.name);
+  console.log("email is: " + req.body.email);
+  console.log("awardtype is: " + req.body.awardtype);
+  console.log("date is: " + req.body.date);
   
   // create reusable transporter object using the default SMTP transport
   //using account recognitionprog with password pa1234ss at gmail
@@ -245,7 +251,7 @@ router.post('/sendemail', function(req, res, next) {
     attachments: [
         {   // utf-8 string as an attachment
             filename: 'text1.txt',
-            content: 'hello world!'
+            content: 'Congratulations! \nYou have received an award! \n' + 'name: ' + req.body.name + '\nemail: ' + req.body.email 
         }
     ]
     

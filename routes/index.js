@@ -332,55 +332,62 @@ router.post('/sendemail', function(req, res, next) {
 
 router.post('/addaward', function(req, res, next) {
   console.log("/addaward  post request received.");
-  console.log("username is: " + req.body.username);
-  console.log("password is: " + req.body.password);
-  console.log("firstname is: " + req.body.firstname);
-  console.log("lastname is: " + req.body.lastname);
+  console.log("name is: " + req.body.name);
+  console.log("email is: " + req.body.email);
+  console.log("awardtype is: " + req.body.awardtype);
+  console.log("date is: " + req.body.date);
   // var id = req.body.id; //for post 
   //id = null; 
   
-  var username = req.body.username;
-  var password = req.body.password;
-  var salt = crypto.randomBytes(128).toString('base64');
+  var name = req.body.name;
+  var email = req.body.email;
 
-  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created) VALUES (?, ?, ?, 0, ?)" );
-  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000), function(err, row) {
+  //var awardtype = req.body.awardtype;
+  //var date = req.body.date;
+  var awardtype = 222;
+  var date = 223;
+
+
+
+  var stmt = db.prepare( "INSERT INTO entries (recipient, email, class, granted) VALUES (?, ?, ?, ?)" );
+  stmt.run(name, email, awardtype, date), function(err, row) {
+
     if (err) {
       res.send("Error registering user" + err);  
     }
+
     else {
-    console.log("username: " + username);
-    console.log("salt: " + salt);
-    console.log("hash: " + password);
+
     
-    res.send("User Registered");  
+    res.send("Award Added");  
     }
-  });
+
+  };
   stmt.finalize(); 
 
 
 });
 
 router.post('/deleteaward', function(req, res, next) {
-  console.log("User deletion post request received.");
-  console.log("userid is: " + req.body.userid);
+  console.log("award deletion post request received.");
+  console.log("awardid is: " + req.body.awardid);
 
   // var id = req.body.id; //for post 
   //id = null; 
   
-  var userid = req.body.userid;
+  var awardid = req.body.awardid;
   
-  var stmt = db.prepare( "DELETE FROM users WHERE id = ?" );
+  var stmt = db.prepare( "DELETE FROM entries WHERE id = ?" );
   
-  stmt.run(userid, function(err, row) {
+  stmt.run(awardid, function(err, row) {
     if (err) {
       res.send("Error deleting user" + err);  
     }
     else {
-    console.log("id: " + userid);
+    console.log("id: " + awardid);
 
     
-    res.send("User deleted");  
+    res.send("Award deleted");  
     
     }
   });
@@ -392,7 +399,7 @@ router.post('/deleteaward', function(req, res, next) {
 
 router.post('/retrieveawardlist', function(req, res, next) {
 
-  console.log("retrieve user list post request received.");
+  console.log("/retrieveawardlist post request received.");
 
 
   // var id = req.body.id; //for post 
@@ -407,12 +414,17 @@ router.post('/retrieveawardlist', function(req, res, next) {
   
 
   
-  db.all("SELECT id, username, is_admin, name, created FROM users", function(err, rows) {
+  db.all("SELECT id, recipient, email, class, granted FROM entries", function(err, rows) {
     rows.forEach(function(row) {
       //console.log(row.id, row.username);
       resp[i] = new Object();
       resp[i].id = row.id;
-      resp[i].username = row.username;
+      resp[i].recipient = row.recipient;
+      resp[i].email = row.email;
+      resp[i].class = row.class;
+      resp[i].granted = row.granted;
+
+
       
       
       i = i + 1;

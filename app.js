@@ -65,7 +65,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  db.get('SELECT id, username, is_admin FROM users WHERE id = ?', id, function(err, row) {
+  db.get('SELECT id, username, is_admin, name FROM users WHERE id = ?', id, function(err, row) {
     if (!row) return done(null, false);
     return done(null, row);
   });

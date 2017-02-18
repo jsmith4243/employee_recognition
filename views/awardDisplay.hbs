@@ -28,6 +28,7 @@
 
     $(document).ready(function()
     {
+      $("#date").val(moment().format("MM/DD/YYYY h:mm A"));
 
       //sendemail
       $('#sendawardbutton').click(function() {
@@ -73,13 +74,10 @@
 
         console.log("sendawardbutton clicked for database");
 
-        var name = $("#name").val();
-
-        var email = $("#email").val();
-
-        var awardtype = $("#awardtype").val(); //DOESNT WORK <<<<
-
-        var date = $("#date").val(); //DOESNT WORK <<<<
+        var name = encodeURIComponent($("#name").val());
+        var email = encodeURIComponent($("#email").val());
+        var awardtype = encodeURIComponent($("#awardtype").val());
+        var date = moment($("#date").val()).format("X");
 
         console.log("name is: " + name);
 
@@ -110,7 +108,7 @@
         var name = encodeURIComponent($("#name").val());
         var email = encodeURIComponent($("#email").val());
         var awardtype = encodeURIComponent($("#awardtype").val());
-        var date = encodeURIComponent($("#date").val());
+        var date = moment($("#date").val()).format("X");
         window.open("/award-preview?name=" + name + "&awardtype=" + awardtype + "&date=" + date, "_self");
       })
 
@@ -122,90 +120,90 @@
           return false;
       }
       
-      httpRequest.onreadystatechange = function(){
+      // httpRequest.onreadystatechange = function(){
       
-        if (httpRequest.readyState === XMLHttpRequest.DONE) 
-        {
+      //   if (httpRequest.readyState === XMLHttpRequest.DONE) 
+      //   {
 
-          if (httpRequest.status === 200) 
-          {
+      //     if (httpRequest.status === 200) 
+      //     {
           
-            //alert(httpRequest.responseText); //if its json you call JSON parse to get a json object which is same as javascript object
-            var arr = JSON.parse(httpRequest.responseText);
+      //       //alert(httpRequest.responseText); //if its json you call JSON parse to get a json object which is same as javascript object
+      //       var arr = JSON.parse(httpRequest.responseText);
             
-            $("#awardtable").empty();  //POINTERX
+      //       $("#awardtable").empty();  //POINTERX
            
-            //var examplefirstname = "examplefirstname";
-            //var examplelastname = "examplelastname";
+      //       //var examplefirstname = "examplefirstname";
+      //       //var examplelastname = "examplelastname";
            
            
-            for(i = 0; i < arr.length; i++)
-            {
-              $("#awardtable").append("<tr>" + "<th scope=row>" + arr[i].class + "</th>" +  "<td>" + arr[i].recipient + "</td>" + "<td>" + arr[i].email + "</td>" + "<td>" + arr[i].granted + "</td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
-            }
+      //       for(i = 0; i < arr.length; i++)
+      //       {
+      //         $("#awardtable").append("<tr>" + "<th scope=row>" + arr[i].class + "</th>" +  "<td>" + arr[i].recipient + "</td>" + "<td>" + arr[i].email + "</td>" + "<td>" + arr[i].granted + "</td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
+      //       }
            
-            $(".tabledeletebutton").click(function() {
+      //       $(".tabledeletebutton").click(function() {
 
-              console.log("tabledeletebutton clicked");
+      //         console.log("tabledeletebutton clicked");
              
-              var id;
+      //         var id;
              
-              id = $(this).attr("userid");
+      //         id = $(this).attr("userid");
              
-              console.log("userid is: " + id);
+      //         console.log("userid is: " + id);
              
              
              
-              var httpRequest = new XMLHttpRequest();
+      //         var httpRequest = new XMLHttpRequest();
       
-              if (!httpRequest) 
-              {
-                alert('Giving up : Cannot create an XMLHTTP instance');
-                return false;
-              }
+      //         if (!httpRequest) 
+      //         {
+      //           alert('Giving up : Cannot create an XMLHTTP instance');
+      //           return false;
+      //         }
       
-              httpRequest.open('POST', '/deleteaward', true);
+      //         httpRequest.open('POST', '/deleteaward', true);
 
-              httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      //         httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-              httpRequest.send("awardid="+id);
+      //         httpRequest.send("awardid="+id);
 
    
     
 
-            });
+      //       });
            
 
            
 
             
-           //$("#usertable").append("<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>");
+      //      //$("#usertable").append("<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>");
             
-           /* 
-                      <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>button</td>
-          <td>button</td>
-          */
+      //      /* 
+      //                 <th scope="row">1</th>
+      //     <td>Mark</td>
+      //     <td>Otto</td>
+      //     <td>@mdo</td>
+      //     <td>button</td>
+      //     <td>button</td>
+      //     */
             
-            console.log(">>>" + arr[0].username);
+      //       console.log(">>>" + arr[0].username);
             
-          } 
+      //     } 
       
-          else 
+      //     else 
       
       
-          {
+      //     {
       
-            alert('There was a problem with the request.');
+      //       alert('There was a problem with the request.');
        
-          }
+      //     }
           
-        }
+      //   }
         
-      }
+      // }
 
 
       
@@ -303,6 +301,7 @@
           <th>Recipient</th>
           <th>Email</th>
           <th>Date</th>
+          <th>View</th>
           <th>Delete</th>
         </tr>
       </thead>
@@ -312,7 +311,8 @@
             <td>{{this.name}}</td>
             <td>{{this.recipient}}</td>
             <td>{{this.email}}</td>
-            <td>{{this.granted}}</td>
+            <td>{{moment this.granted input="X" format="MM/DD/YYYY h:mm A"}}</td>
+            <td><a href="/award-preview?name={{this.recipient}}&awardtype={{this.class}}&date={{this.granted}}" type="button" class="btn btn-default">View</button></td>
             <td><button type="button" class="btn btn-danger">Delete</button></td>
           </tr>
         {{/each}}

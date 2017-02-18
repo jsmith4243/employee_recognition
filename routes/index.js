@@ -36,7 +36,7 @@ router.get('/', function(req, res, next) {
       db.all('SELECT * FROM classes', function(err, classes) {
         db.all('SELECT * FROM entries LEFT JOIN classes c ON class = c.id WHERE user = ?', req.user.id, function(err, entries) {
           console.log(entries);
-          res.render('awardDisplay', { title: 'Awards', user: req.user.username, classes: classes, entries: entries });
+          res.render('awardDisplay', { title: 'Awards', user: req.user.name, classes: classes, entries: entries });
         });
       });
 
@@ -111,6 +111,24 @@ router.get('/test-download', function(req, res) {
   res.setHeader('Content-disposition', 'attachment; filename=award.pdf');
   res.setHeader('Content-type', 'application/pdf');
   award.test().pipe(res);
+});
+
+router.get('/award-preview', function(req, res) {
+  if (req.user) {
+    var name = req.param('name');
+    var awardtype = req.param('awardtype');
+    var date = req.param('date');
+
+    db.get('SELECT name FROM classes WHERE id = ?', awardtype, function(err, awardtyperow) {
+      
+      res.setHeader('Content-disposition', 'attachment; filename=award.pdf');
+      res.setHeader('Content-type', 'application/pdf');
+      award.generate(name, awardtyperow['name'], date, req.user.name).pipe(res);
+    });
+  }
+  else {
+    res.redirect('/');
+  }
 });
 
 router.post('/deleteuser', function(req, res, next) {

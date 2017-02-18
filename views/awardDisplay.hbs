@@ -21,6 +21,12 @@
 
   <script type="text/javascript">
 
+    function validateForm() {
+      var okay = $("#name").val().trim().length && $("#email").val().trim().length && moment($("#date").val()).isValid();
+      $('#sendawardbutton').prop("disabled", !okay);
+      $('#previewawardbutton').prop("disabled", !okay);
+    }
+
     $(function () {
       $('#datetimepicker1').datetimepicker();
     });
@@ -29,6 +35,7 @@
     $(document).ready(function()
     {
       $("#date").val(moment().format("MM/DD/YYYY h:mm A"));
+      validateForm();
 
       //sendemail
       $('#sendawardbutton').click(function() {
@@ -251,13 +258,13 @@
       <div class="form-group">
         <label class="control-label col-sm-3" for="name">Recipient name:</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" name="name" id="name" required>
+          <input type="text" class="form-control" name="name" id="name" onKeyup="validateForm()" required>
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-3" for="email">Recipient email:</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" name="email" id="email" required>
+          <input type="text" class="form-control" name="email" id="email" onKeyup="validateForm()" required>
         </div>
       </div>
       <div class="form-group">
@@ -274,7 +281,7 @@
         <label class="control-label col-sm-3" for="date">Date:</label>
         <div class="col-sm-9">
           <div class='input-group date' id='datetimepicker1'>
-            <input type='text' class="form-control" name="date" id="date" required />
+            <input type='text' class="form-control" name="date" id="date" onKeyup="validateForm()" required />
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-calendar"></span>
             </span>

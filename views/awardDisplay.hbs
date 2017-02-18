@@ -106,14 +106,13 @@
 
       }); 
 
-
-
-
-
-
-
-
-
+      $('#previewawardbutton').click(function() {
+        var name = encodeURIComponent($("#name").val());
+        var email = encodeURIComponent($("#email").val());
+        var awardtype = encodeURIComponent($("#awardtype").val());
+        var date = encodeURIComponent($("#date").val());
+        window.open("/award-preview?name=" + name + "&awardtype=" + awardtype + "&date=" + date, "_self");
+      })
 
       var httpRequest = new XMLHttpRequest();
       
@@ -264,11 +263,11 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="control-label col-sm-3" for="class">Award type:</label>
+        <label class="control-label col-sm-3" for="awardtype">Award type:</label>
         <div class="col-sm-9">
-          <select class="form-control" id="class" id="awardtype">
+          <select class="form-control" name="awardtype" id="awardtype">
             {{#each classes}}
-            <option>{{this.name}}</option>
+            <option value="{{this.id}}">{{this.name}}</option>
             {{/each}}
           </select>
         </div>
@@ -277,7 +276,7 @@
         <label class="control-label col-sm-3" for="date">Date:</label>
         <div class="col-sm-9">
           <div class='input-group date' id='datetimepicker1'>
-            <input type='text' class="form-control" name="date" required />
+            <input type='text' class="form-control" name="date" id="date" required />
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -285,7 +284,7 @@
         </div>
       </div>
       <div class="pull-right">
-        <button type="button" class="btn btn-default" >Preview Award</button>
+        <button type="button" class="btn btn-default" id="previewawardbutton">Preview Award</button>
         <button type="submit" class="btn btn-primary" id="sendawardbutton">Send Award</button>
         </div>
     </form>

@@ -1,7 +1,7 @@
 var latex = require("latex");
 var moment = require('moment');
 
-var command = "C:\\Program \Files\\MiKTeX 2.9\\miktex\\bin\\x64\\miktex-pdflatex.exe";
+var command = "C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64\\miktex-pdflatex.exe";
 
 var options = { command : command };
 

@@ -13,6 +13,10 @@ var db = require('./db/index');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var Handlebars = require("handlebars");
+var MomentHandler = require("handlebars.moment");
+MomentHandler.registerHelpers(Handlebars);
+
 var app = express();
 
 

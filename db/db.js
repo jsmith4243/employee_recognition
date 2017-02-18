@@ -21,9 +21,9 @@ function createTable3() {
 }
 
 function insertUser1() {
-    var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin) VALUES(-1, ?, ?, ?, 0)");
+    var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin, name) VALUES(-1, ?, ?, ?, 0, ?)");
     var salt = crypto.randomBytes(128).toString('base64');
-    stmt.run("user@example.com", hashPassword("password", salt), salt);
+    stmt.run("user@example.com", hashPassword("password", salt), salt, "Example User");
     stmt.finalize(insertUser2);
 }
 

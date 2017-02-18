@@ -38,78 +38,78 @@
       validateForm();
 
       //sendemail
-      $('#sendawardbutton').click(function() {
+      // $('#sendawardbutton').click(function() {
 
-        console.log("sendawardbutton clicked");
+      //   console.log("sendawardbutton clicked");
 
-        var name = $("#name").val();
+      //   var name = $("#name").val();
 
-        var email = $("#email").val();
+      //   var email = $("#email").val();
 
-        var awardtype = $("#awardtype").val(); //DOESNT WORK <<<<
+      //   var awardtype = $("#awardtype").val(); //DOESNT WORK <<<<
 
-        var date = $("#date").val(); //DOESNT WORK <<<<
+      //   var date = $("#date").val(); //DOESNT WORK <<<<
 
-        console.log("name is: " + name);
+      //   console.log("name is: " + name);
 
-        console.log("email is: " + email);
+      //   console.log("email is: " + email);
 
-        console.log("awardtype is: " + awardtype);
+      //   console.log("awardtype is: " + awardtype);
 
-        console.log("date is: " + date);
+      //   console.log("date is: " + date);
 
-        var httpRequest = new XMLHttpRequest();
+      //   var httpRequest = new XMLHttpRequest();
       
-        if (!httpRequest) 
-        {
-          alert('Giving up : Cannot create an XMLHTTP instance');
-          return false;
-        }
+      //   if (!httpRequest) 
+      //   {
+      //     alert('Giving up : Cannot create an XMLHTTP instance');
+      //     return false;
+      //   }
       
-        httpRequest.open('POST', '/sendemail', true);
+      //   httpRequest.open('POST', '/sendemail', true);
 
-        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      //   httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        httpRequest.send("name="+name+"&email="+email+"&awardtype="+awardtype+"&date="+date);
-
-
-      }); 
+      //   httpRequest.send("name="+name+"&email="+email+"&awardtype="+awardtype+"&date="+date);
 
 
+      // }); 
 
-      $('#sendawardbutton').click(function() {
 
-        console.log("sendawardbutton clicked for database");
 
-        var name = encodeURIComponent($("#name").val());
-        var email = encodeURIComponent($("#email").val());
-        var awardtype = encodeURIComponent($("#awardtype").val());
-        var date = moment($("#date").val()).format("X");
+      // $('#sendawardbutton').click(function() {
 
-        console.log("name is: " + name);
+      //   console.log("sendawardbutton clicked for database");
 
-        console.log("email is: " + email);
+      //   var name = encodeURIComponent($("#name").val());
+      //   var email = encodeURIComponent($("#email").val());
+      //   var awardtype = encodeURIComponent($("#awardtype").val());
+      //   var date = moment($("#date").val()).format("X");
 
-        console.log("awardtype is: " + awardtype);
+      //   console.log("name is: " + name);
 
-        console.log("date is: " + date);
+      //   console.log("email is: " + email);
 
-        var httpRequest = new XMLHttpRequest();
+      //   console.log("awardtype is: " + awardtype);
+
+      //   console.log("date is: " + date);
+
+      //   var httpRequest = new XMLHttpRequest();
       
-        if (!httpRequest) 
-        {
-          alert('Giving up : Cannot create an XMLHTTP instance');
-          return false;
-        }
+      //   if (!httpRequest) 
+      //   {
+      //     alert('Giving up : Cannot create an XMLHTTP instance');
+      //     return false;
+      //   }
       
-        httpRequest.open('POST', '/addaward', true);
+      //   httpRequest.open('POST', '/addaward', true);
 
-        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      //   httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        httpRequest.send("name="+name+"&email="+email+"&awardtype="+awardtype+"&date="+date);
+      //   httpRequest.send("name="+name+"&email="+email+"&awardtype="+awardtype+"&date="+date);
 
 
-      }); 
+      // }); 
 
       $('#previewawardbutton').click(function() {
         var name = encodeURIComponent($("#name").val());
@@ -254,7 +254,7 @@
     <div class="panel panel-default">
 
     <div class="panel-body">
-    <form class="form-horizontal">
+    <form class="form-horizontal" action="/sendaward" method="post">
       <div class="form-group">
         <label class="control-label col-sm-3" for="name">Recipient name:</label>
         <div class="col-sm-9">

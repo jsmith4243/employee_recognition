@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
 var award = require("../award/index");
-
+var moment = require('moment');
 
 /* //mongo
 var MongoClient = require('mongodb').MongoClient;
@@ -243,6 +243,54 @@ router.post('/retrieveuserlist', function(req, res, next) {
 
 });
 
+router.post('/sendaward', function(req, res, next) {
+  if (req.user) {
+    var transporter = nodemailer.createTransport('smtps://recognitionprog%40gmail.com:pa1234ss@smtp.gmail.com');
+    
+    var name = req.body.name;
+    var awardtype = req.body.awardtype;
+    var date = moment(req.body.date).format("X");
+
+    db.get('SELECT name FROM classes WHERE id = ?', awardtype, function(err, awardtyperow) {
+      var awardfile = award.generate(name, awardtyperow['name'], date, req.user.name);
+      //awardfile.pause();
+      console.log(awardfile);
+      var mailOptions = {
+        from: '"Gemini Company Awards" <recognitionprog@gmail.com>',
+        to: '"' + req.body.name + '" <' + req.body.email + '>',
+        subject: 'You\'ve received an award!',
+        text: 'You\'ve received an award!',
+        html: 'You\'ve received an award!', // html body
+
+        // attachments: [
+        //     {
+        //         filename: 'award.pdf',
+        //         content: awardfile
+        //     }
+        // ]
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            return console.log(error);
+        }
+
+        console.log('Message sent: ' + info.response);
+
+        db.run("INSERT INTO entries (class, recipient, email, user, granted) VALUES (?, ?, ?, ?, ?)",
+            awardtype, name, req.body.email, req.user.id, date, function(err, row) {
+          if (err) {
+            res.send("Error registering user" + err);  
+          }
+          else {
+            res.redirect('/');
+          }
+        });
+      });
+    });
+  }
+});
+
 router.post('/sendemail', function(req, res, next) {
 
   console.log("/sendemail  post request received.");
@@ -252,6 +300,12 @@ router.post('/sendemail', function(req, res, next) {
   console.log("email is: " + req.body.email);
   console.log("awardtype is: " + req.body.awardtype);
   console.log("date is: " + req.body.date);
+
+  var name = encodeURIComponent(req.body.name);
+  var email = encodeURIComponent(req.body.email);
+  var awardtype = encodeURIComponent(req.body.awardtype);
+  var date = encodeURIComponent(req.body.date);
+  var awardurl = "/award-preview?name=" + name + "&awardtype=" + awardtype + "&date=" + date;
   
   // create reusable transporter object using the default SMTP transport
   //using account recognitionprog with password pa1234ss at gmail
@@ -259,9 +313,9 @@ router.post('/sendemail', function(req, res, next) {
   
   // setup e-mail data with unicode symbols
   var mailOptions = {
-    from: '"Fred Foo ?" <foo@blurdybloop.com>', // sender address
-    to: 'recognitionprog@gmail.com, baz@blurdybloop.com', // list of receivers
-    subject: 'Hello ✔', // Subject line
+    from: '"Gemini Company Awards" <recognitionprog@gmail.com>', // sender address
+    to: '"req.body.name" <' + req.body.email + '>', // list of receivers
+    subject: 'You\'ve received an award!', // Subject line
     text: 'Hello world ?', // plaintext body
     html: '<b>Hello world ?</b>', // html body
     

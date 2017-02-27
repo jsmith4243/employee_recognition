@@ -11,7 +11,7 @@ function hashPassword(password, salt) {
 var db = new sqlite3.Database('./database.db');
 
 function createTable1() {
-    db.exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, salt TEXT NOT NULL, is_admin INTEGER, name TEXT, signature BLOB, created INTEGER, CONSTRAINT name_unique UNIQUE (username, is_admin) ON CONFLICT FAIL);", createTable2); 
+    db.exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, salt TEXT NOT NULL, is_admin INTEGER, name TEXT, signature TEXT, mimetype TEXT, created INTEGER, CONSTRAINT name_unique UNIQUE (username, is_admin) ON CONFLICT FAIL);", createTable2); 
 }
 function createTable2() {
     db.exec("CREATE TABLE IF NOT EXISTS classes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE);", createTable3); 
@@ -21,9 +21,9 @@ function createTable3() {
 }
 
 function insertUser1() {
-    var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin, name) VALUES(-1, ?, ?, ?, 0, ?)");
+    var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin, name, signature, mimetype) VALUES(-1, ?, ?, ?, 0, ?, ?, ?)");
     var salt = crypto.randomBytes(128).toString('base64');
-    stmt.run("user@example.com", hashPassword("password", salt), salt, "Example User");
+    stmt.run("user@example.com", hashPassword("password", salt), salt, "Example User", "placeholder2.png", "image/png");
     stmt.finalize(insertUser2);
 }
 

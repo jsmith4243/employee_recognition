@@ -29,7 +29,7 @@
   
     <h1>{{title}}</h1>
     
-    <form action="/register" method="post">
+    <form action="/register" method="post" enctype="multipart/form-data">
       <div class="form-group">
         <label for="name">Full name</label>
         <input type="text" class="form-control" id="name" name="name" placeholder="Enter full name">
@@ -42,6 +42,11 @@
         <label for="password">Password</label>
         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
       </div>
+      <div class="form-group">
+        <label for="signature">Upload signature file</label>
+        <input type="file" class="form-control" id="signature" name="signature">
+      </div>
+
     
       <div class="btn-group" role="group" aria-label="...">
         <button type="submit" class="btn btn-primary">Submit</button>

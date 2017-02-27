@@ -3,6 +3,22 @@ var router = express.Router();
 var crypto = require('crypto');
 var award = require("../award/index");
 var moment = require('moment');
+var fs = require('fs');
+var multer = require('multer');
+var mime = require('mime');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+        cb(err, err ? undefined : raw.toString('hex') + '.' + mime.extension(file.mimetype))
+    });
+  }
+})
+
+var upload = multer({ dest: 'uploads/', storage: storage});
 
 /* //mongo
 var MongoClient = require('mongodb').MongoClient;
@@ -76,12 +92,13 @@ router.get('/logout', function(req, res) {
   res.redirect('/');
 })
 
-router.post('/register', function(req, res, next) {
+router.post('/register', upload.single('signature'), function(req, res, next) {
   console.log("User registration post request received.");
   console.log("username is: " + req.body.username);
   console.log("password is: " + req.body.password);
-  console.log("firstname is: " + req.body.firstname);
-  console.log("lastname is: " + req.body.lastname);
+  console.log("name is: " + req.body.name);
+  console.log("filename is: " + req.file.filename);
+  console.log("mimetype is: " + req.file.mimetype);
   // var id = req.body.id; //for post 
   //id = null; 
   
@@ -89,8 +106,8 @@ router.post('/register', function(req, res, next) {
   var password = req.body.password;
   var salt = crypto.randomBytes(128).toString('base64');
 
-  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name) VALUES (?, ?, ?, 0, ?, ?)" );
-  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000), req.body.name, function(err, row) {
+  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, 0, ?, ?, ?, ?)" );
+  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000), req.body.name, req.file.filename, req.file.mimetype, function(err, row) {
     if (err) {
       res.send("Error registering user" + err);  
     }
@@ -105,6 +122,23 @@ router.post('/register', function(req, res, next) {
   stmt.finalize(); 
 
 
+});
+
+router.get('/mysignature', function(req, res) {
+  if (req.user && req.user.is_admin === 0 && req.user.signature) {
+    var s = fs.createReadStream('uploads/' + req.user.signature);
+    s.on('open', function () {
+      res.set('Content-Type', req.user.mimetype);
+      s.pipe(res);
+    });
+    s.on('error', function() {
+      res.set('Content-Type', 'text/plain');
+      res.status(404).end('Not found');
+    });
+  }
+  else {
+    res.redirect('/');
+  }
 });
 
 router.get('/test-download', function(req, res) {
@@ -123,7 +157,7 @@ router.get('/award-preview', function(req, res) {
       
       res.setHeader('Content-disposition', 'attachment; filename=award.pdf');
       res.setHeader('Content-type', 'application/pdf');
-      award.generate(name, awardtyperow['name'], date, req.user.name).pipe(res);
+      award.generate(name, awardtyperow['name'], date, req.user.name, req.user.signature).pipe(res);
     });
   }
   else {
@@ -252,40 +286,51 @@ router.post('/sendaward', function(req, res, next) {
     var date = moment(req.body.date).format("X");
 
     db.get('SELECT name FROM classes WHERE id = ?', awardtype, function(err, awardtyperow) {
-      var awardfile = award.generate(name, awardtyperow['name'], date, req.user.name);
-      //awardfile.pause();
-      console.log(awardfile);
-      var mailOptions = {
-        from: '"Gemini Company Awards" <recognitionprog@gmail.com>',
-        to: '"' + req.body.name + '" <' + req.body.email + '>',
-        subject: 'You\'ve received an award!',
-        text: 'You\'ve received an award!',
-        html: 'You\'ve received an award!', // html body
+      var awardfile = award.generate(name, awardtyperow['name'], date, req.user.name, req.user.signature);
 
-        // attachments: [
-        //     {
-        //         filename: 'award.pdf',
-        //         content: awardfile
-        //     }
-        // ]
-      };
+      crypto.pseudoRandomBytes(16, function (err, raw) {
+        var temppath = err ? 'tmp' : raw.toString('hex');
+        var tempfile = fs.createWriteStream(temppath);
 
-      transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-            return console.log(error);
-        }
+        tempfile.on('finish', function () {
+          console.log(awardfile);
+          var mailOptions = {
+            from: '"Gemini Company Awards" <recognitionprog@gmail.com>',
+            to: '"' + req.body.name + '" <' + req.body.email + '>',
+            subject: 'You\'ve received an award!',
+            text: 'You\'ve received an award!',
+            html: 'You\'ve received an award!', // html body
 
-        console.log('Message sent: ' + info.response);
+            attachments: [
+                {
+                    filename: 'award.pdf',
+                    path: temppath
+                }
+            ]
+          };
 
-        db.run("INSERT INTO entries (class, recipient, email, user, granted) VALUES (?, ?, ?, ?, ?)",
-            awardtype, name, req.body.email, req.user.id, date, function(err, row) {
-          if (err) {
-            res.send("Error registering user" + err);  
-          }
-          else {
-            res.redirect('/');
-          }
+          transporter.sendMail(mailOptions, function(error, info){
+            fs.unlink(temppath);
+            if(error){
+                return console.log(error);
+            }
+
+            console.log('Message sent: ' + info.response);
+
+
+            db.run("INSERT INTO entries (class, recipient, email, user, granted) VALUES (?, ?, ?, ?, ?)",
+                awardtype, name, req.body.email, req.user.id, date, function(err, row) {
+              if (err) {
+                res.send("Error sending award " + err);  
+              }
+              else {
+                res.redirect('/');
+              }
+            });
+          });
         });
+        awardfile.pipe(tempfile);
+        // tempfile.end();
       });
     });
   }

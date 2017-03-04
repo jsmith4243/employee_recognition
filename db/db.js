@@ -23,7 +23,7 @@ function createTable4() {
     db.exec("CREATE TABLE IF NOT EXISTS divisions (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)", createTable5); 
 }
 function createTable5() {
-    db.exec("CREATE TABLE IF NOT EXISTS departments (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT))", insertDivisions); 
+    db.exec("CREATE TABLE IF NOT EXISTS departments (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)", insertDivisions); 
 }
 
 function insertDivisions() {
@@ -49,7 +49,7 @@ function insertDepartments() {
                   {id: 3, name: "Human Resources"},
                   {id: 4, name: "IT"}];
     departments.forEach(function (department) {
-        db.run("INSERT OR IGNORE INTO departments (id, name) VALUES (?)", department.id, department.name, function () {
+        db.run("INSERT OR IGNORE INTO departments (id, name) VALUES (?, ?)", department.id, department.name, function () {
             i++;
             if (i === departments.length) {
                 insertUser1();

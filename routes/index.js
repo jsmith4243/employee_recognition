@@ -165,6 +165,29 @@ router.get('/award-preview', function(req, res) {
   }
 });
 
+router.get('/reports', function(req, res) {
+  if (req.isAuthenticated() && req.user.is_admin === 1) {
+
+    var show = req.query['show'];
+
+    if (show === 'users') {
+        db.all('SELECT u.name AS name, username AS email, COUNT(e.id) AS count FROM entries e LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id', function(err, users) {
+        res.render('userstats', { title: 'User Statistics', users: users });
+      });
+    }
+    else {
+      db.all('SELECT u.name AS sender, c.name AS type, recipient, email, granted FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id', function(err, entries) {
+        res.render('allawards', { title: 'All Awards', entries: entries });
+      });
+    }
+
+  }
+  else {
+    res.redirect('/');
+  }
+});
+
+
 router.post('/deleteuser', function(req, res, next) {
   console.log("User deletion post request received.");
   console.log("userid is: " + req.body.userid);

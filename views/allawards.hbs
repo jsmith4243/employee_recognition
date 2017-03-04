@@ -1,0 +1,64 @@
+<html lang="en">
+
+  <title>{{title}}</title>
+  
+  <link rel ='stylesheet' href='stylesheets/style.css' />
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  
+  
+  
+  
+  <script>
+  
+
+  
+  </script>
+
+
+  <body>
+  
+    <h1>{{title}}</h1>
+
+    <p><a href="/reports?show=users">User Statistics</a></p>
+   
+        <div class="panel-body">
+    <table class="table" >
+      <thead>
+        <tr>
+          <th>Sender</th>
+          <th>Type</th>
+          <th>Recipient</th>
+          <th>Email</th>
+          <th>Date</th>
+          <th>View</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="awardtable">
+        {{#each entries}}
+          <tr>
+            <td>{{this.sender}}</td>
+            <td>{{this.type}}</td>
+            <td>{{this.recipient}}</td>
+            <td>{{this.email}}</td>
+            <td>{{moment this.granted input="X" format="MM/DD/YYYY h:mm A"}}</td>
+            <td><a href="/award-preview?name={{this.recipient}}&awardtype={{this.class}}&date={{this.granted}}" type="button" class="btn btn-default">View</button></td>
+            <td><button type="button" class="btn btn-danger">Delete</button></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    </div>
+
+  </body>
+<html>

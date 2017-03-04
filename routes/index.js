@@ -166,7 +166,7 @@ router.get('/award-preview', function(req, res) {
 });
 
 router.get('/reports', function(req, res) {
-  // if (req.isAuthenticated() && req.user.is_admin === 1) {
+  if (req.isAuthenticated() && req.user.is_admin === 1) {
 
     var show = req.query['show'];
 
@@ -181,10 +181,10 @@ router.get('/reports', function(req, res) {
       });
     }
 
-  // }
-  // else {
-  //   res.redirect('/');
-  // }
+  }
+  else {
+    res.redirect('/');
+  }
 });
 
 

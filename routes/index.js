@@ -157,7 +157,7 @@ router.get('/award-preview', function(req, res) {
       
       res.setHeader('Content-disposition', 'attachment; filename=award.pdf');
       res.setHeader('Content-type', 'application/pdf');
-      award.generate(name, awardtyperow['name'], date, req.user.name, req.user.signature).pipe(res);
+      award.generate(name, awardtyperow['name'], date, req.query['sender'] || req.user.name, req.query['signature'] || req.user.signature).pipe(res);
     });
   }
   else {
@@ -176,7 +176,7 @@ router.get('/reports', function(req, res) {
       });
     }
     else {
-      db.all('SELECT u.name AS sender, c.name AS type, recipient, email, granted FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id', function(err, entries) {
+      db.all('SELECT u.name AS sender, signature, c.name AS type, class, recipient, email, granted FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id', function(err, entries) {
         res.render('allawards', { title: 'All Awards', entries: entries });
       });
     }

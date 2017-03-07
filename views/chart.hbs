@@ -31,27 +31,119 @@
     // instantiates the pie chart, passes in the data and
     // draws it.
     function drawChart() {
-    
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Topping');
-        data.addColumn('number', 'Slices');
-        data.addRows([
-          ['Mushrooms', 3],
-          ['Onions', 1],
-          ['Olives', 1],
-          ['Zucchini', 1],
-          ['Pepperoni', 2]
-        ]);
+
+        //var json = "{{json}}";
+        //var jsonstring = JSON.stringify( {{json}} );
+        //var arr = JSON.parse( json );
+        //console.log("{{json}}")
+        //console.log(json);
+
         
-        // Set chart options
-        var options = {'title':'How Much Pizza I Ate Last Night',
+
+
+        var httpRequest = new XMLHttpRequest();
+        
+        
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+
+
+
+
+        httpRequest.onreadystatechange = function(){
+        
+          if (httpRequest.readyState === XMLHttpRequest.DONE) 
+          {
+          
+            if (httpRequest.status === 200) 
+            {
+
+              //alert(httpRequest.responseText); //if its json you call JSON parse to get a json object which is same as javascript object
+
+
+              var arr = JSON.parse(httpRequest.responseText);
+
+              // Create the data table.
+              var data = new google.visualization.DataTable();
+              data.addColumn('string', 'Topping');
+              data.addColumn('number', 'Slices');
+              /*
+              data.addRows([
+                ['Mushrooms', 3],
+                ['Onions', 1],
+                ['Olives', 1],
+                ['Zucchini', 1],
+                ['Pepperoni', 2]
+              ]);
+              */
+        
+
+
+              var username;
+              var awardcount;
+
+              for(i = 0; i < arr.length; i++)
+              {
+
+                //arr[i].id
+
+                username = arr[i].username;
+
+                awardcount = arr[i].awardcount
+                //awardcount = i;
+
+                data.addRows([
+
+                  [arr[i].username, awardcount]
+
+                ]);
+
+
+              }
+
+              // Set chart options
+              var options = {'title':'Number Of Awards Awarded To Employees By User That Awarded Them',
                        'width':400,
                        'height':300};
 
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+
+
+              // Instantiate and draw our chart, passing in some options.
+              var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+              chart.draw(data, options);
+        
+              
+
+
+
+                
+            } 
+              
+            else 
+              
+              
+            {
+              
+              alert('There was a problem with the request.');
+                
+            }
+          }
+        
+        
+        };
+
+
+        httpRequest.open('POST', '/getuserawardcount', true);
+
+        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      
+        httpRequest.send();
+
+
+    
+
         
     }
   
@@ -68,7 +160,9 @@
     <h1>{{title}}</h1>
    
 
-    
+
+
+
     <div class="btn-group" role="group" aria-label="...">
       <a href="http://localhost:3000/"><button type="button" class="btn btn-default">Log Out</button></a>
       <a href="http://localhost:3000/userSettings"><button type="button" class="btn btn-default">User Settings</button></a>

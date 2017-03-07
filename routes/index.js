@@ -80,7 +80,64 @@ router.get('/administration', function(req, res, next) {
 });
 
 router.get('/chart', function(req, res, next) {
-  res.render('chart', { title: 'chart' });
+
+  var data = '[{"username": "user1", "numberofawards": "3"}, {"username": "user2", "numberofawards": "5"} ]';
+
+  var javascriptobject = JSON.parse(data);
+
+  var jsonstring = JSON.stringify(data);
+
+  //console.log("Username: " + data[0].username); //wrong if data is an string
+  //console.log("Username: " + javascriptobject[0].username);
+
+  //console.log("Username: " + jsonstring[0].username);
+
+  res.render('Chart', { title: 'Chart', json: data });
+  //res.render('chart', { title: 'chart', json: javascriptobject });
+  //res.render('chart', { title: 'chart', json: jsonstring });
+
+});
+
+router.post('/getuserawardcount', function(req, res, next) {
+
+
+  console.log("/getuserawardcount received");
+
+  var resp = new Array();
+  
+  var i = 0;
+  
+  
+
+  
+  db.all("SELECT id, username, awardcount FROM users", function(err, rows) {
+    rows.forEach(function(row) {
+      //console.log(row.id, row.username);
+      resp[i] = new Object();
+      resp[i].id = row.id;
+      resp[i].username = row.username;
+      resp[i].awardcount = row.awardcount;
+      
+      
+      i = i + 1;
+      
+      
+    })
+    
+    /*
+    console.log("i: " + i);
+    console.log("resp[0].username:" + resp[1].username);
+    console.log(JSON.stringify(resp));
+    */
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(resp));
+    
+  });
+
+
+
+
 });
 
 router.post('/login', passport.authenticate('user-local', { successRedirect: '/' }));
@@ -481,6 +538,7 @@ router.post('/addaward', function(req, res, next) {
   
   var name = req.body.name;
   var email = req.body.email;
+  var awardedby = req.body.awardedby
 
   //var awardtype = req.body.awardtype;
   //var date = req.body.date;
@@ -504,6 +562,10 @@ router.post('/addaward', function(req, res, next) {
 
   };
   stmt.finalize(); 
+
+
+ 
+  //db.run("UPDATE users SET awardcount = awardcount + 1 WHERE username = " + awardedby);
 
 
 });

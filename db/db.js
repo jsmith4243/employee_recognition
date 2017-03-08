@@ -11,7 +11,7 @@ function hashPassword(password, salt) {
 var db = new sqlite3.Database('./database.db');
 
 function createTable1() {
-    db.exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, salt TEXT NOT NULL, is_admin INTEGER, name TEXT, signature TEXT, mimetype TEXT, created INTEGER, division INTEGER, department INTEGER, awardcount INTEGER, FOREIGN KEY(division) REFERENCES divisions(id), FOREIGN KEY(department) REFERENCES departments(id), CONSTRAINT name_unique UNIQUE (username, is_admin) ON CONFLICT FAIL);", createTable2); 
+    db.exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, salt TEXT NOT NULL, is_admin INTEGER, name TEXT, signature TEXT, mimetype TEXT, created INTEGER, division INTEGER, department INTEGER, FOREIGN KEY(division) REFERENCES divisions(id), FOREIGN KEY(department) REFERENCES departments(id), CONSTRAINT name_unique UNIQUE (username, is_admin) ON CONFLICT FAIL);", createTable2); 
 }
 function createTable2() {
     db.exec("CREATE TABLE IF NOT EXISTS classes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE);", createTable3); 
@@ -75,36 +75,36 @@ function insertUser2() {
 
 function insertUsers() {
     var i = 0;
-    users = [ {id: 1, username: "a@example.com", name: "Andy Atkinson", division: 1, department: 1, awardcount : 4},
-              {id: 2, username: "b@example.com", name: "Beatrix Bancroft", division: 1, department: 1, awardcount : 1},
-              {id: 3, username: "c@example.com", name: "Carol Campbell", division: 1, department: 2, awardcount : 7},
-              {id: 4, username: "d@example.com", name: "Diana Durant", division: 1, department: 2, awardcount : 0},
-              {id: 5, username: "e@example.com", name: "Eugene Eberly", division: 1, department: 3, awardcount : 0},
-              {id: 6, username: "f@example.com", name: "Fred Fuchs", division: 1, department: 3, awardcount : 0},
-              {id: 7, username: "g@example.com", name: "Ginny Guo", division: 1, department: 4, awardcount : 0},
-              {id: 8, username: "h@example.com", name: "Harold Hearst", division: 2, department: 1, awardcount : 0},
-              {id: 9, username: "i@example.com", name: "Irene Kerr", division: 2, department: 2, awardcount : 0},
-              {id: 10, username: "j@example.com", name: "Joanna Jiang", division: 2, department: 3, awardcount : 0},
-              {id: 11, username: "k@example.com", name: "Kathleen Kerr", division: 2, department: 4, awardcount : 0},
-              {id: 12, username: "l@example.com", name: "Lee LeConte", division: 2, department: 4, awardcount : 0},
-              {id: 13, username: "m@example.com", name: "Michael Moss", division: 2, department: 4, awardcount : 0},
-              {id: 14, username: "n@example.com", name: "Nancy Nunez", division: 2, department: 4, awardcount : 0},
-              {id: 15, username: "o@example.com", name: "Oscar O'Brien", division: 3, department: 1, awardcount : 0},
-              {id: 16, username: "p@example.com", name: "Pamela Peek", division: 3, department: 1, awardcount : 0},
-              {id: 17, username: "q@example.com", name: "Quincy Qiu", division: 3, department: 1, awardcount : 0},
-              {id: 18, username: "r@example.com", name: "Renee Roth", division: 3, department: 2, awardcount : 0},
-              {id: 19, username: "s@example.com", name: "Steven Simon", division: 3, department: 2, awardcount : 0},
-              {id: 20, username: "t@example.com", name: "Tasha Tang", division: 3, department: 3, awardcount : 0},
-              {id: 21, username: "u@example.com", name: "Ursula Ure", division: 3, department: 3, awardcount : 0},
-              {id: 22, username: "v@example.com", name: "Vincent Vo", division: 3, department: 4, awardcount : 0},
-              {id: 23, username: "w@example.com", name: "Will Watt", division: 4, department: 1, awardcount : 0},
-              {id: 24, username: "x@example.com", name: "Xavier Xi", division: 4, department: 2, awardcount : 0},
-              {id: 25, username: "y@example.com", name: "Yvette Yang", division: 4, department: 3, awardcount : 0},
-              {id: 26, username: "z@example.com", name: "Zelda Zhou", division: 4, department: 4, awardcount : 0}
+    users = [ {id: 1, username: "a@example.com", name: "Andy Atkinson", division: 1, department: 1},
+               {id: 2, username: "b@example.com", name: "Beatrix Bancroft", division: 1, department: 1},
+               {id: 3, username: "c@example.com", name: "Carol Campbell", division: 1, department: 2},
+               {id: 4, username: "d@example.com", name: "Diana Durant", division: 1, department: 2},
+               {id: 5, username: "e@example.com", name: "Eugene Eberly", division: 1, department: 3},
+               {id: 6, username: "f@example.com", name: "Fred Fuchs", division: 1, department: 3},
+               {id: 7, username: "g@example.com", name: "Ginny Guo", division: 1, department: 4},
+               {id: 8, username: "h@example.com", name: "Harold Hearst", division: 2, department: 1},
+               {id: 9, username: "i@example.com", name: "Irene Kerr", division: 2, department: 2},
+               {id: 10, username: "j@example.com", name: "Joanna Jiang", division: 2, department: 3},
+               {id: 11, username: "k@example.com", name: "Kathleen Kerr", division: 2, department: 4},
+               {id: 12, username: "l@example.com", name: "Lee LeConte", division: 2, department: 4},
+               {id: 13, username: "m@example.com", name: "Michael Moss", division: 2, department: 4},
+               {id: 14, username: "n@example.com", name: "Nancy Nunez", division: 2, department: 4},
+               {id: 15, username: "o@example.com", name: "Oscar O'Brien", division: 3, department: 1},
+               {id: 16, username: "p@example.com", name: "Pamela Peek", division: 3, department: 1},
+               {id: 17, username: "q@example.com", name: "Quincy Qiu", division: 3, department: 1},
+               {id: 18, username: "r@example.com", name: "Renee Roth", division: 3, department: 2},
+               {id: 19, username: "s@example.com", name: "Steven Simon", division: 3, department: 2},
+               {id: 20, username: "t@example.com", name: "Tasha Tang", division: 3, department: 3},
+               {id: 21, username: "u@example.com", name: "Ursula Ure", division: 3, department: 3},
+               {id: 22, username: "v@example.com", name: "Vincent Vo", division: 3, department: 4},
+               {id: 23, username: "w@example.com", name: "Will Watt", division: 4, department: 1},
+               {id: 24, username: "x@example.com", name: "Xavier Xi", division: 4, department: 2},
+               {id: 25, username: "y@example.com", name: "Yvette Yang", division: 4, department: 3},
+               {id: 26, username: "z@example.com", name: "Zelda Zhou", division: 4, department: 4}
     ];
     users.forEach(function (user) {
-        db.run("INSERT OR IGNORE INTO users(id, username, name, division, department, awardcount, password, salt, signature, mimetype) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            user.id, user.username, user.name, user.division, user.department, user.awardcount, "", "", "placeholder2.png", "image/png", function () {
+        db.run("INSERT OR IGNORE INTO users(id, username, name, division, department, password, salt, signature, mimetype) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            user.id, user.username, user.name, user.division, user.department, "", "", "placeholder2.png", "image/png", function () {
             i++;
             if (i === users.length) {
                 insertClasses();

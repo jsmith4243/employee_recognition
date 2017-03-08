@@ -109,7 +109,7 @@ router.post('/getuserawardcount', function(req, res, next) {
   
   
 
-  
+  /*    //extra field awardcount in users table implementation
   db.all("SELECT id, username, awardcount FROM users", function(err, rows) {
     rows.forEach(function(row) {
       //console.log(row.id, row.username);
@@ -124,16 +124,50 @@ router.post('/getuserawardcount', function(req, res, next) {
       
     })
     
-    /*
+    
     console.log("i: " + i);
     console.log("resp[0].username:" + resp[1].username);
     console.log(JSON.stringify(resp));
-    */
     
+
+
+
+    //db.all('SELECT count(*) FROM entries WHERE user =  ', function(err, users) {
+
+
+  });
+
+  */
+
+
+  db.all("SELECT user, users.username, count(user) AS count FROM entries LEFT OUTER JOIN users ON entries.user = users.id  GROUP BY user", function(err, rows) {
+    rows.forEach(function(row) {
+      //console.log(row.id, row.username);
+      resp[i] = new Object();
+      resp[i].id = row.user;
+      resp[i].username = row.username;
+      resp[i].awardcount = row.count;
+      
+      
+      i = i + 1;
+      
+      
+    })
+
+
+  
+
+
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(resp));
-    
+
   });
+
+  
+
+
+
+ 
 
 
 

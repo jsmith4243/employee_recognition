@@ -690,7 +690,103 @@ router.post('/retrieveawardlist', function(req, res, next) {
 
 
 
+router.get('/userSettings', function(req, res) 
+{
+  
+  res.render('settings', { title: 'Settings' });
 
+
+});
+
+router.post('/edituserFromSettings', function(req, res, next) {
+  console.log("User edit post request received.");
+  //console.log("userid is: " + req.body.userid);
+  console.log("userid is: " + req.user.id);
+  console.log("username is: " + req.body.username);
+  console.log("firstname is: " + req.body.firstname);
+  console.log("lastname is: " + req.body.lastname);
+
+  // var id = req.body.id; //for post 
+  //id = null; 
+  
+  var userid = req.user.id;
+  var username = req.body.username;
+  var firstname = req.body.firstname;
+  var lastname = req.body.lastname;
+  
+  //var stmt = db.prepare( "UPDATE users SET username = ?, firstname = ?, lastname = ? WHERE id = ?" );
+  var stmt = db.prepare( "UPDATE users SET username = ? WHERE id = ?" );
+  
+  stmt.run(username, userid, function(err, row) {
+    if (err) {
+      res.send("Error editing user" + err);  
+    }
+    else {
+    console.log("id: " + userid);
+
+    
+    res.send("User edited");  
+    
+    }
+  });
+  stmt.finalize(); 
+
+
+});
+
+
+router.post('/retrieveuserlistFromSettings', function(req, res, next) {
+
+  console.log("retrieve user list from settings post request received.");
+
+
+  // var id = req.body.id; //for post 
+  //id = null; 
+  
+  //var resp = new Object();
+  
+  var resp = new Array();
+  
+  var i = 0;
+  
+  var idofcurrentuser;
+
+  var idofcurrentuser = req.user.id;
+
+  console.log("id of current user is: " + idofcurrentuser);
+
+  
+  db.all("SELECT id, username, is_admin, name, created FROM users WHERE id = " + idofcurrentuser , function(err, rows) {
+    rows.forEach(function(row) {
+      //console.log(row.id, row.username);
+      resp[i] = new Object();
+      resp[i].id = row.id;
+      resp[i].username = row.username;
+      
+      
+      i = i + 1;
+      
+      
+    })
+    
+    /*
+    console.log("i: " + i);
+    console.log("resp[0].username:" + resp[1].username);
+    console.log(JSON.stringify(resp));
+    */
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(resp));
+    
+  });
+  
+  //
+  
+  
+
+
+
+});
 
 
 

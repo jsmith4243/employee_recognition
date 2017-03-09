@@ -1,0 +1,256 @@
+<html lang="en">
+
+  <title>{{title}}</title>
+  
+  <link rel ='stylesheet' href='stylesheets/style.css' />
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  
+  
+  
+  <script>
+  
+  
+    $(document).ready(function()
+    {
+    
+    
+
+
+
+
+      
+      var httpRequest = new XMLHttpRequest();
+      
+      if (!httpRequest) 
+      {
+          alert('Giving up : Cannot create an XMLHTTP instance');
+          return false;
+      }
+      
+      httpRequest.onreadystatechange = function(){
+      
+        if (httpRequest.readyState === XMLHttpRequest.DONE) 
+        {
+
+          if (httpRequest.status === 200) 
+          {
+          
+            //alert(httpRequest.responseText); //if its json you call JSON parse to get a json object which is same as javascript object
+            var arr = JSON.parse(httpRequest.responseText);
+            
+           $("#usertable").empty();
+           
+           var examplefirstname = "examplefirstname";
+           var examplelastname = "examplelastname";
+           
+           
+           for(i = 0; i < arr.length; i++)
+           {
+             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + examplefirstname + "</td>" + "<td>" + examplelastname + "</td>" );
+           }
+           
+
+           
+
+             
+  
+            var id = arr[0].id;
+
+
+            var username = arr[0].username;
+
+            var firstname = examplefirstname;
+
+            var lastname = examplelastname;
+             
+
+             
+            $("#usernameedit").val( username );
+
+            $("#firstnameedit").val( firstname );
+
+            $("#lastnameedit").val( lastname );
+
+            $("#usereditbutton").attr("id",id);
+             
+
+             
+             
+             
+             
+
+             
+             
+      
+
+    
+
+
+           
+           $("#usereditbutton").click(function() {
+           
+             var httpRequest = new XMLHttpRequest();
+      
+             if (!httpRequest) 
+             {
+               alert('Giving up : Cannot create an XMLHTTP instance');
+               return false;
+             }
+           
+             httpRequest.open('POST', '/edituserFromSettings', true);
+
+             httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+             
+             var usernametosend = $("#usernameedit").val();
+             var firstnametosend = $("#firstnameedit").val();
+             var lastnametosend = $("#lastnameedit").val();
+             
+             var id;
+             //id = $(this).attr("id");
+             
+             //httpRequest.send("userid="+ id);
+             httpRequest.send("userid="+ id + "&username=" + usernametosend + "&firstname=" + firstnametosend  + "&lastname=" + lastnametosend );
+
+                   
+           
+           });
+            
+           //$("#usertable").append("<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>");
+            
+           /* 
+                      <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+          <td>button</td>
+          <td>button</td>
+          */
+            
+            console.log(">>>" + arr[0].username);
+            
+          } 
+      
+          else 
+      
+      
+          {
+      
+            alert('There was a problem with the request.');
+       
+          }
+          
+        }
+        
+      }
+
+
+      
+      httpRequest.open('POST', '/retrieveuserlistFromSettings', true);
+      
+      httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      
+      httpRequest.send();
+      
+      
+
+    });
+
+  
+  </script>
+
+
+  <body>
+  
+    <h1>{{title}}</h1>
+   
+
+    
+    <div class="btn-group" role="group" aria-label="...">
+      <a href="/logout" class="btn btn-default">Log Out</a>
+      <a href="http://localhost:3000/userSettings"><button type="button" class="btn btn-default">User Settings</button></a>
+      
+    </div>
+    
+
+
+    
+    <br>
+    <br>
+    
+    <h2>Your Account Information:</h2>
+    
+    <br>
+    <br>
+    
+    <table class="table">
+      <thead>
+        <tr>
+
+          <th>Id #</th>
+          <th>User Name</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+
+        </tr>
+      </thead>
+      <tbody id="usertable">
+        <tr>
+
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+
+        </tr>
+
+      </tbody>
+    </table>
+    
+    <br>
+    <br>
+    <h2>Edit Your Account Information:</h2>
+    <br>
+    <br>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="User Name" aria-describedby="basic-addon1" id="usernameedit">
+    </div>
+    
+    <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" id="passwordedit">
+    </div>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="firstnameedit">
+    </div>
+    
+    <div class="input-group">
+      
+      <span class="input-group-addon" id="basic-addon1">@</span>
+      <input type="text" class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" id="lastnameedit">
+    </div>
+    
+    <label class="control-label">User Signature Image File</label>
+    <input id="input-1edit" type="file" class="file">
+
+    <button type="button" class="btn btn-default" id="usereditbutton">Edit User</button>
+
+    
+
+  </body>
+<html>

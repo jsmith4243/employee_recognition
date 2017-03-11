@@ -30,30 +30,58 @@
     <h1>{{title}}</h1>
 
     <p><a href="/reports?show=awards">All Awards</a></p>
-   
-        <div class="panel-body">
-    <table class="table" >
-      <thead>
-        <tr>
-          <th>Sender</th>
-          <th>Email</th>
-          <th>Division</th>
-          <th>Department</th>
-          <th>Awards sent</th>
-        </tr>
-      </thead>
-      <tbody id="awardtable">
-        {{#each users}}
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <form action="" method="get" class="form-inline">
+          <input type="hidden" name="show" value="users">
+          <div class="form-group">
+          <label class="control-label" for="division">Filter by division:</label>
+          <select name="division" class="form-control">
+            <option value="0"></option>
+            {{#each divisions}}
+            <option value="{{this.id}}" {{#if this.selected}}selected="selected"{{/if}}>{{this.name}}</option>
+            {{/each}}
+          </select>
+          </div>
+          <div class="form-group">
+          <label class="control-label" for="department">Filter by department:</label>
+          <select name="department" class="form-control">
+            <option value="0"></option>
+            {{#each departments}}
+            <option value="{{this.id}}" {{#if this.selected}}selected="selected"{{/if}}>{{this.name}}</option>
+            {{/each}}
+          </select>
+          </div>
+          <button type="submit" name="submit" value="submit" class="btn btn-primary">Filter</button>
+          <button type="submit" name="submit" value="csv" class="btn">Download as CSV</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <table class="table" >
+        <thead>
           <tr>
-            <td>{{this.name}}</td>
-            <td>{{this.email}}</td>
-            <td>{{this.division}}</td>
-            <td>{{this.department}}</td>
-            <td>{{this.count}}</td>
+            <th>Sender</th>
+            <th>Email</th>
+            <th>Division</th>
+            <th>Department</th>
+            <th>Awards sent</th>
           </tr>
-        {{/each}}
-      </tbody>
-    </table>
+        </thead>
+        <tbody id="awardtable">
+          {{#each users}}
+            <tr>
+              <td>{{this.name}}</td>
+              <td>{{this.email}}</td>
+              <td>{{this.division}}</td>
+              <td>{{this.department}}</td>
+              <td>{{this.count}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
 
   </body>

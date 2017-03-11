@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
 var award = require("../award/index");
+var csv = require('../csv/index');
 var moment = require('moment');
 var fs = require('fs');
 var multer = require('multer');
@@ -257,18 +258,62 @@ router.get('/award-preview', function(req, res) {
 });
 
 router.get('/reports', function(req, res) {
-  if (req.isAuthenticated() && req.user.is_admin === 1) {
+ if (req.isAuthenticated() && req.user.is_admin === 1) {
+
+    var department = parseInt(req.query['department']);
+    var division = parseInt(req.query['division']);
+    var params = [];
+    var filter = ''
+    if (department) {
+      filter += ' dp.id = ?';
+      params.push(department);
+    }
+    if (division) {
+      if (params.length > 0) {
+        filter += ' AND'
+      }
+      filter += ' dv.id = ?';
+      params.push(division);
+    }
+    if (params.length > 0) {
+      filter = ' WHERE' + filter;
+    }
 
     var show = req.query['show'];
 
     if (show === 'users') {
-        db.all('SELECT u.name AS name, username AS email, dv.name AS division, dp.name AS department, COUNT(e.id) AS count FROM entries e LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id GROUP BY u.id', function(err, users) {
-        res.render('userstats', { title: 'User Statistics', users: users });
+      var query = 'SELECT u.name AS name, username AS email, dv.name AS division, dp.name AS department, COUNT(e.id) AS count FROM entries e LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' GROUP BY u.id';
+
+      db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
+        db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
+          db.all(query, ...params, function(err, users) {
+            if (req.query['submit'] === 'csv') {
+              res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
+              res.setHeader('Content-Type', 'text/csv');
+              res.send(csv.export(users, ['name', 'email', 'division', 'department', 'count'], ['Name', 'Email', 'Division', 'Department', 'Count']));
+            }
+            else {
+              res.render('userstats', { title: 'User Statistics', users: users, departments: departments, divisions: divisions });
+            }
+          });          
+        });
       });
     }
     else {
-      db.all('SELECT u.name AS sender, signature, c.name AS type, class, recipient, email, granted FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id', function(err, entries) {
-        res.render('allawards', { title: 'All Awards', entries: entries });
+      var query = 'SELECT u.name AS sender, signature, c.name AS type, class, recipient, email, granted, dv.name AS division, dp.name AS department FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' ORDER BY granted DESC';
+      db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
+        db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
+          db.all(query, ...params, function(err, entries) {
+            if (req.query['submit'] === 'csv') {
+              res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
+              res.setHeader('Content-Type', 'text/csv');
+              res.send(csv.export(entries, ['sender', 'type', 'recipient', 'email', 'granted', 'division', 'department'], ['Sender', 'Type', 'Recipient', 'Email', 'Granted', 'Division', 'Department']));
+            }
+            else {
+              res.render('allawards', { title: 'All Awards', entries: entries, departments: departments, divisions: divisions });
+            }
+          });          
+        });
       });
     }
 

@@ -56,7 +56,7 @@
            
            for(i = 0; i < arr.length; i++)
            {
-             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + examplefirstname + "</td>" + "<td>" + examplelastname + "</td>" );
+             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + arr[i].name + "</td>" +  "<td>" + arr[i].password + "</td>" );
            }
            
 
@@ -72,6 +72,8 @@
             var firstname = examplefirstname;
 
             var lastname = examplelastname;
+
+            var name = arr[0].name;
              
 
              
@@ -80,6 +82,8 @@
             $("#firstnameedit").val( firstname );
 
             $("#lastnameedit").val( lastname );
+
+            $("#nameedit").val( name );
 
             //$("#usereditbutton").attr("id",id);
              
@@ -112,14 +116,16 @@
              httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
              
              var usernametosend = $("#usernameedit").val();
-             var firstnametosend = $("#firstnameedit").val();
-             var lastnametosend = $("#lastnameedit").val();
+
+             var nametosend = $("#nameedit").val();
+
+             var passwordtosend = $("#passwordedit").val();
              
              var id;
              //id = $(this).attr("id");
              
              //httpRequest.send("userid="+ id);
-             httpRequest.send("userid="+ id + "&username=" + usernametosend + "&firstname=" + firstnametosend  + "&lastname=" + lastnametosend );
+             httpRequest.send("userid="+ id + "&username=" + usernametosend + "&name=" + nametosend+ "&password=" + passwordtosend    );
 
                    
            
@@ -198,8 +204,8 @@
 
           <th>Id #</th>
           <th>User Name</th>
-          <th>First Name</th>
-          <th>Last Name</th>
+          <th>Name</th>
+          <th>Password</th>
 
         </tr>
       </thead>
@@ -236,14 +242,10 @@
     <div class="input-group">
       
       <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="firstnameedit">
+      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="nameedit">
     </div>
     
-    <div class="input-group">
-      
-      <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" id="lastnameedit">
-    </div>
+
     
     <label class="control-label">User Signature Image File</label>
     <input id="input-1edit" type="file" class="file">

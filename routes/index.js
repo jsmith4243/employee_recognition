@@ -833,8 +833,10 @@ router.post('/edituserFromSettings', function(req, res, next) {
   //console.log("userid is: " + req.body.userid);
   console.log("userid is: " + req.user.id);
   console.log("username is: " + req.body.username);
-  console.log("firstname is: " + req.body.firstname);
+  console.log("name is: " + req.body.name);
   console.log("lastname is: " + req.body.lastname);
+  console.log("new password is: " + req.body.password);
+
 
   // var id = req.body.id; //for post 
   //id = null; 
@@ -843,11 +845,14 @@ router.post('/edituserFromSettings', function(req, res, next) {
   var username = req.body.username;
   var firstname = req.body.firstname;
   var lastname = req.body.lastname;
+  var name = req.body.name;
+  
+  var password = req.body.password;
   
   //var stmt = db.prepare( "UPDATE users SET username = ?, firstname = ?, lastname = ? WHERE id = ?" );
-  var stmt = db.prepare( "UPDATE users SET username = ? WHERE id = ?" );
+  var stmt = db.prepare( "UPDATE users SET username = ?, name = ? WHERE id = ?" );
   
-  stmt.run(username, userid, function(err, row) {
+  stmt.run(username,  name, userid, function(err, row) {
     if (err) {
       res.send("Error editing user" + err);  
     }
@@ -865,6 +870,10 @@ router.post('/edituserFromSettings', function(req, res, next) {
 });
 
 
+
+
+
+
 router.post('/retrieveuserlistFromSettings', function(req, res, next) {
 
   console.log("retrieve user list from settings post request received.");
@@ -874,6 +883,8 @@ router.post('/retrieveuserlistFromSettings', function(req, res, next) {
   //id = null; 
   
   //var resp = new Object();
+
+
   
   var resp = new Array();
   
@@ -881,17 +892,29 @@ router.post('/retrieveuserlistFromSettings', function(req, res, next) {
   
   var idofcurrentuser;
 
+  console.log("flag1a");
+
+
   var idofcurrentuser = req.user.id;
+
+  console.log("flag11");
 
   console.log("id of current user is: " + idofcurrentuser);
 
   
-  db.all("SELECT id, username, is_admin, name, created FROM users WHERE id = " + idofcurrentuser , function(err, rows) {
+  //db.all("SELECT id, username, is_admin, name, created FROM users WHERE id = " + idofcurrentuser , function(err, rows) {
+  db.all("SELECT id, username, is_admin, name, created, password FROM users WHERE id = " + idofcurrentuser , function(err, rows) {
     rows.forEach(function(row) {
       //console.log(row.id, row.username);
+
+
+      console.log("row.username is: " + row.username);
+
       resp[i] = new Object();
       resp[i].id = row.id;
       resp[i].username = row.username;
+      resp[i].password = row.password;
+      resp[i].name = row.name;
       
       
       i = i + 1;

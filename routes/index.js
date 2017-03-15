@@ -869,11 +869,16 @@ router.post('/edituserFromSettings', function(req, res, next) {
   var name = req.body.name;
 
   var password = req.body.password;
+  var salt = crypto.randomBytes(128).toString('base64');
+  var passwordhash = hashPassword(password, salt);
+
+
+
   
   //var stmt = db.prepare( "UPDATE users SET username = ?, firstname = ?, lastname = ? WHERE id = ?" );
-  var stmt = db.prepare( "UPDATE users SET username = ?, name = ? WHERE id = ?" );
+  var stmt = db.prepare( "UPDATE users SET username = ?, name = ?, password = ?, salt = ? WHERE id = ?" );
   
-  stmt.run(username,  name, userid, function(err, row) {
+  stmt.run(username,  name, passwordhash, salt, userid, function(err, row) {
     if (err) {
       res.send("Error editing user" + err);  
     }

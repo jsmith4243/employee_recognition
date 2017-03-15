@@ -74,6 +74,26 @@
           alert('Giving up : Cannot create an XMLHTTP instance');
           return false;
         }
+
+        httpRequest.onreadystatechange = function(){
+      
+          if (httpRequest.readyState === XMLHttpRequest.DONE) 
+          {
+
+            if (httpRequest.status === 200) 
+            {
+
+
+              location.reload(true);
+
+
+            }
+
+
+          }
+
+
+        }
       
         httpRequest.open('POST', '/deleteuser', true);
 
@@ -135,6 +155,26 @@
                alert('Giving up : Cannot create an XMLHTTP instance');
                return false;
              }
+
+              httpRequest.onreadystatechange = function(){
+      
+                if (httpRequest.readyState === XMLHttpRequest.DONE) 
+                {
+
+                  if (httpRequest.status === 200) 
+                  {
+
+
+                    location.reload(true);
+
+
+                  }
+
+
+                }
+
+
+              }
       
              httpRequest.open('POST', '/deleteuser', true);
 
@@ -197,6 +237,27 @@
                alert('Giving up : Cannot create an XMLHTTP instance');
                return false;
              }
+
+
+              httpRequest.onreadystatechange = function(){
+      
+                if (httpRequest.readyState === XMLHttpRequest.DONE) 
+                {
+
+                  if (httpRequest.status === 200) 
+                  {
+
+
+                    location.reload(true);
+
+
+                  }
+
+
+                }
+
+
+              }
            
              httpRequest.open('POST', '/edituser', true);
 

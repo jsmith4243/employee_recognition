@@ -98,7 +98,7 @@
       
 
     
-
+            var id = 555;
 
            
            $("#usereditbutton").click(function() {
@@ -121,11 +121,21 @@
 
              var passwordtosend = $("#passwordedit").val();
              
-             var id;
+             
              //id = $(this).attr("id");
              
              //httpRequest.send("userid="+ id);
              httpRequest.send("userid="+ id + "&username=" + usernametosend + "&name=" + nametosend+ "&password=" + passwordtosend    );
+
+
+
+              //$("#usertable").empty();
+
+           
+
+             //$("#usertable").append("<tr>" + "<th scope=row>" + id + "</th>" +  "<td>" + usernametosend + "</td>" + "<td>" + nametosend + "</td>" +  "<td>" + passwordtosend + "</td>" );
+
+             location.reload(true);
 
                    
            

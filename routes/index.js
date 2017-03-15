@@ -443,19 +443,39 @@ router.post('/edituser', function(req, res, next) {
   console.log("username is: " + req.body.username);
   console.log("firstname is: " + req.body.firstname);
   console.log("lastname is: " + req.body.lastname);
+  console.log("name is: " + req.body.name);
+  console.log("password is: " + req.body.password);
+
 
   // var id = req.body.id; //for post 
   //id = null; 
   
   var userid = req.body.userid;
   var username = req.body.username;
+
   var firstname = req.body.firstname;
   var lastname = req.body.lastname;
+
+  var name = req.body.name;
+  var password = req.body.password;
+
+/*
+
+  var salt = crypto.randomBytes(128).toString('base64');
+
+  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, 0, ?, ?, ?, ?)" );
+  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000),
+
+*/
+
+  var salt = crypto.randomBytes(128).toString('base64');
   
   //var stmt = db.prepare( "UPDATE users SET username = ?, firstname = ?, lastname = ? WHERE id = ?" );
-  var stmt = db.prepare( "UPDATE users SET username = ? WHERE id = ?" );
+  //var stmt = db.prepare( "UPDATE users SET username = ? WHERE id = ?" );
+  var stmt = db.prepare( "UPDATE users SET username = ?, password = ?, salt = ?, name = ? WHERE id = ?" );
   
-  stmt.run(username, userid, function(err, row) {
+  //stmt.run(username, userid, function(err, row) {
+  stmt.run(username, hashPassword(password, salt), salt, name, userid, function(err, row) {
     if (err) {
       res.send("Error editing user" + err);  
     }
@@ -495,6 +515,7 @@ router.post('/retrieveuserlist', function(req, res, next) {
       resp[i] = new Object();
       resp[i].id = row.id;
       resp[i].username = row.username;
+      resp[i].name = row.name;
       
       
       i = i + 1;
@@ -846,7 +867,7 @@ router.post('/edituserFromSettings', function(req, res, next) {
   var firstname = req.body.firstname;
   var lastname = req.body.lastname;
   var name = req.body.name;
-  
+
   var password = req.body.password;
   
   //var stmt = db.prepare( "UPDATE users SET username = ?, firstname = ?, lastname = ? WHERE id = ?" );

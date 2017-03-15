@@ -35,6 +35,8 @@
         var firstname = $("#firstname").val();
         
         var lastname = $("#lastname").val();
+
+        var name = $("#name").val();
       
         var httpRequest = new XMLHttpRequest();
       
@@ -43,12 +45,18 @@
           alert('Giving up : Cannot create an XMLHTTP instance');
           return false;
         }
+
+
+
+
+
+
       
         httpRequest.open('POST', '/register', true);
 
         httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        httpRequest.send("username="+username+"&password="+password+"&firstname="+firstname+"&lastname="+lastname); //post attributes here, id is a javascript variable appended
+        httpRequest.send("username="+username+"&password="+password+"&name="+name); //post attributes here, id is a javascript variable appended
 
    
     
@@ -105,7 +113,7 @@
            
            for(i = 0; i < arr.length; i++)
            {
-             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + examplefirstname + "</td>" + "<td>" + examplelastname + "</td>" + "<td><button type=\"button\" class=\"btn btn-default tableeditbutton\"  userid=\"" + arr[i].id + "\"   id=\"tableeditbutton\" username=\"" + arr[i].username + "\" firstname=\"" + arr[i].firstname + "\" lastname=\"" + arr[i].lastname + "\" >Edit</button></td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
+             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + arr[i].name + "</td>"   + "<td><button type=\"button\" class=\"btn btn-default tableeditbutton\"  userid=\"" + arr[i].id + "\"   id=\"tableeditbutton\" username=\"" + arr[i].username + "\" name=\"" + arr[i].name + "\" lastname=\"" + arr[i].lastname + "\" >Edit</button></td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
            }
            
            $(".tabledeletebutton").click(function() {
@@ -163,6 +171,12 @@
              var lastname = $(this).attr("lastname");
              
              $("#lastnameedit").val( lastname );
+
+
+             var name = $(this).attr("name");
+             $("#nameedit").val( name );
+
+
              
              $("#usereditbutton").attr("id",id);
 
@@ -191,12 +205,24 @@
              var usernametosend = $("#usernameedit").val();
              var firstnametosend = $("#firstnameedit").val();
              var lastnametosend = $("#lastnameedit").val();
+
+             var nametosend = $("#nameedit").val();
+
+             
+
+
+             var passwordtosend = $("#passwordedit").val();
+
+             console.log("nametosend: " + nametosend);
+             console.log("passwordtosend: " + passwordtosend);
+             console.log("usernametosend: " + usernametosend);
+
              
              var id;
              id = $(this).attr("id");
              
              //httpRequest.send("userid="+ id);
-             httpRequest.send("userid="+ id + "&username=" + usernametosend + "&firstname=" + firstnametosend  + "&lastname=" + lastnametosend );
+             httpRequest.send("userid="+ id + "&username=" + usernametosend + "&name=" + nametosend  + "&password=" + passwordtosend );
 
                    
            
@@ -268,6 +294,8 @@
     
     <br>
     <br>
+
+    <!--
     
     <div class="input-group">
       
@@ -283,20 +311,45 @@
     <div class="input-group">
       
       <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="firstname">
+      <input type="text" class="form-control" placeholder="Name" aria-describedby="basic-addon1" id="name">
     </div>
     
-    <div class="input-group">
-      
-      <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" id="lastname">
-    </div>
+
     
     <label class="control-label">User Signature Image File</label>
-    <input id="input-1" type="file" class="file">
+    <input type="file" class="form-control" id="signature" name="signature">
 
     <button type="button" class="btn btn-default" id="createuserbutton">Create User</button>
 
+
+
+
+    -->
+
+    <form action="/register" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="name">Full name</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Enter full name">
+      </div>
+      <div class="form-group">
+        <label for="username">Email address</label>
+        <input type="email" class="form-control" id="username" name="username" placeholder="Enter email">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+      </div>
+      <div class="form-group">
+        <label for="signature">Upload signature file</label>
+        <input type="file" class="form-control" id="signature" name="signature">
+      </div>
+
+    
+      <div class="btn-group" role="group" aria-label="...">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <!-- <a href="http://localhost:3000/"><button type="button" class="btn btn-default">Back To Index</button></a> -->
+      </div>
+    </form>
 
 
 
@@ -330,8 +383,8 @@
         <tr>
           <th>Id #</th>
           <th>User Name</th>
-          <th>First Name</th>
-          <th>Last Name</th>
+          <th>Name</th>
+
           <th>Edit</th>
           <th>Delete</th>
         </tr>
@@ -369,17 +422,12 @@
     <div class="input-group">
       
       <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="firstnameedit">
+      <input type="text" class="form-control" placeholder="Name" aria-describedby="basic-addon1" id="nameedit">
     </div>
     
-    <div class="input-group">
-      
-      <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" id="lastnameedit">
-    </div>
+
     
-    <label class="control-label">User Signature Image File</label>
-    <input id="input-1edit" type="file" class="file">
+    <br>
 
     <button type="button" class="btn btn-default" id="usereditbutton">Edit User</button>
 

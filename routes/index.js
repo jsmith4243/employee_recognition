@@ -42,6 +42,7 @@ function hashPassword(password, salt) {
 var award = require('./award');
 var site = require('./site');
 var user = require('./user');
+var admin = require('./admin');
 
 router.get('/', site.index);
 
@@ -306,138 +307,11 @@ router.get('/reports', function(req, res) {
 });
 
 
-router.post('/deleteuser', function(req, res, next) {
-  console.log("User deletion post request received.");
-  console.log("userid is: " + req.body.userid);
+router.post('/deleteuser', admin.deleteuser);
 
-  // var id = req.body.id; //for post 
-  //id = null; 
-  
-  var userid = req.body.userid;
-  
-  var stmt = db.prepare( "DELETE FROM users WHERE id = ?" );
-  
-  stmt.run(userid, function(err, row) {
-    if (err) {
-      res.send("Error deleting user" + err);  
-    }
-    else {
-    console.log("id: " + userid);
+router.post('/edituser', admin.edituser);
 
-    
-    res.send("User deleted");  
-    
-    }
-  });
-  stmt.finalize(); 
-
-
-});
-
-router.post('/edituser', function(req, res, next) {
-  console.log("User edit post request received.");
-  console.log("userid is: " + req.body.userid);
-  console.log("username is: " + req.body.username);
-  console.log("firstname is: " + req.body.firstname);
-  console.log("lastname is: " + req.body.lastname);
-  console.log("name is: " + req.body.name);
-  console.log("password is: " + req.body.password);
-
-
-  // var id = req.body.id; //for post 
-  //id = null; 
-  
-  var userid = req.body.userid;
-  var username = req.body.username;
-
-  var firstname = req.body.firstname;
-  var lastname = req.body.lastname;
-
-  var name = req.body.name;
-  var password = req.body.password;
-
-/*
-
-  var salt = crypto.randomBytes(128).toString('base64');
-
-  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, 0, ?, ?, ?, ?)" );
-  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000),
-
-*/
-
-  var salt = crypto.randomBytes(128).toString('base64');
-  
-  //var stmt = db.prepare( "UPDATE users SET username = ?, firstname = ?, lastname = ? WHERE id = ?" );
-  //var stmt = db.prepare( "UPDATE users SET username = ? WHERE id = ?" );
-  var stmt = db.prepare( "UPDATE users SET username = ?, password = ?, salt = ?, name = ? WHERE id = ?" );
-  
-  //stmt.run(username, userid, function(err, row) {
-  stmt.run(username, hashPassword(password, salt), salt, name, userid, function(err, row) {
-    if (err) {
-      res.send("Error editing user" + err);  
-    }
-    else {
-    console.log("id: " + userid);
-
-    
-    res.send("User edited");  
-    
-    }
-  });
-  stmt.finalize(); 
-
-
-});
-
-router.post('/retrieveuserlist', function(req, res, next) {
-
-  console.log("retrieve user list post request received.");
-
-
-  // var id = req.body.id; //for post 
-  //id = null; 
-  
-  //var resp = new Object();
-  
-  var resp = new Array();
-  
-  var i = 0;
-  
-  
-
-  
-  db.all("SELECT id, username, is_admin, name, created FROM users", function(err, rows) {
-    rows.forEach(function(row) {
-      //console.log(row.id, row.username);
-      resp[i] = new Object();
-      resp[i].id = row.id;
-      resp[i].username = row.username;
-      resp[i].name = row.name;
-      
-      
-      i = i + 1;
-      
-      
-    })
-    
-    /*
-    console.log("i: " + i);
-    console.log("resp[0].username:" + resp[1].username);
-    console.log(JSON.stringify(resp));
-    */
-    
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(resp));
-    
-  });
-  
-  //
-  
-  
-
-
-
-});
+router.post('/retrieveuserlist', admin.retrieveuserlist);
 
 router.post('/sendaward', award.send);
 
@@ -445,131 +319,11 @@ router.get('/test-download', award.test);
 
 router.get('/award-preview', award.preview);
 
-router.post('/addaward', function(req, res, next) {
-  console.log("/addaward  post request received.");
-  console.log("name is: " + req.body.name);
-  console.log("email is: " + req.body.email);
-  console.log("awardtype is: " + req.body.awardtype);
-  console.log("date is: " + req.body.date);
-  // var id = req.body.id; //for post 
-  //id = null; 
-  
-  var name = req.body.name;
-  var email = req.body.email;
-  var awardedby = req.body.awardedby
+router.post('/addaward', admin.addaward);
 
-  //var awardtype = req.body.awardtype;
-  //var date = req.body.date;
-  var awardtype = 222;
-  var date = 223;
+router.post('/deleteaward', admin.deleteaward);
 
-
-
-  var stmt = db.prepare( "INSERT INTO entries (recipient, email, class, granted) VALUES (?, ?, ?, ?)" );
-  stmt.run(name, email, awardtype, date), function(err, row) {
-
-    if (err) {
-      res.send("Error registering user" + err);  
-    }
-
-    else {
-
-    
-    res.send("Award Added");  
-    }
-
-  };
-  stmt.finalize(); 
-
-
- 
-  //db.run("UPDATE users SET awardcount = awardcount + 1 WHERE username = " + awardedby);
-
-
-});
-
-router.post('/deleteaward', function(req, res, next) {
-  console.log("award deletion post request received.");
-  console.log("awardid is: " + req.body.awardid);
-
-  // var id = req.body.id; //for post 
-  //id = null; 
-  
-  var awardid = req.body.awardid;
-  
-  var stmt = db.prepare( "DELETE FROM entries WHERE id = ?" );
-  
-  stmt.run(awardid, function(err, row) {
-    if (err) {
-      res.send("Error deleting user" + err);  
-    }
-    else {
-    console.log("id: " + awardid);
-
-    
-    res.send("Award deleted");  
-    
-    }
-  });
-  stmt.finalize(); 
-
-
-});
-
-
-router.post('/retrieveawardlist', function(req, res, next) {
-
-  console.log("/retrieveawardlist post request received.");
-
-
-  // var id = req.body.id; //for post 
-  //id = null; 
-  
-  //var resp = new Object();
-  
-  var resp = new Array();
-  
-  var i = 0;
-  
-  
-
-  
-  db.all("SELECT id, recipient, email, class, granted FROM entries", function(err, rows) {
-    rows.forEach(function(row) {
-      //console.log(row.id, row.username);
-      resp[i] = new Object();
-      resp[i].id = row.id;
-      resp[i].recipient = row.recipient;
-      resp[i].email = row.email;
-      resp[i].class = row.class;
-      resp[i].granted = row.granted;
-
-
-      
-      
-      i = i + 1;
-      
-      
-    })
-    
-    /*
-    console.log("i: " + i);
-    console.log("resp[0].username:" + resp[1].username);
-    console.log(JSON.stringify(resp));
-    */
-    
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(resp));
-    
-  });
-  
-  //
-  
-  
-
-
-
-});
+router.post('/retrieveawardlist', admin.retrieveawardlist);
 
 
 

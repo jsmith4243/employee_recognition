@@ -40,43 +40,13 @@ function hashPassword(password, salt) {
 }
 
 var award = require('./award');
+var site = require('./site');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  if (req.user) {
-    if (req.user.is_admin === 1) {
-      res.redirect('/administration');
-    }
-    else {
-      db.all('SELECT * FROM classes', function(err, classes) {
-        db.all('SELECT * FROM entries LEFT JOIN classes c ON class = c.id WHERE user = ?', req.user.id, function(err, entries) {
-          console.log(entries);
-          res.render('awardDisplay', { title: 'Awards', user: req.user.name, classes: classes, entries: entries });
-        });
-      });
+router.get('/', site.index);
 
-    }
-  }
-  else {
+router.get('/userRegistration', site.registration);
 
-    res.render('index', { title: 'Employee Recognition' });
-  }
-});
-
-router.get('/userRegistration', function(req, res, next) {
-  res.render('userRegistration', { title: 'User Registration' });
-});
-
-router.get('/administration', function(req, res, next) {
-  if (req.isAuthenticated() && req.user.is_admin === 1) {
-    next();
-  }
-  else {
-    res.render('adminLogin', { title: 'Administration Login' });
-  }
-} , function(req, res) {
-  res.render('administration', { title: 'Administration' });
-});
+router.get('/administration', site.administration);
 
 router.get('/chart', function(req, res, next) {
 

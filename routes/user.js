@@ -48,3 +48,45 @@ exports.mysignature = function(req, res) {
   }
 };
 
+exports.edituserFromSettings = function(req, res, next) {
+  var userid = req.user.id;
+  var username = req.body.username;
+  var firstname = req.body.firstname;
+  var lastname = req.body.lastname;
+  var name = req.body.name;
+  var password = req.body.password;
+  var salt = crypto.randomBytes(128).toString('base64');
+  var passwordhash = hashPassword(password, salt);
+
+  var stmt = db.prepare( "UPDATE users SET username = ?, name = ?, password = ?, salt = ? WHERE id = ?" );
+  stmt.run(username, name, passwordhash, salt, userid, function(err, row) {
+    if (err) {
+      res.send("Error editing user" + err);  
+    }
+    else {
+      console.log("id: " + userid);
+      res.send("User edited");
+    }
+  });
+  stmt.finalize(); 
+};
+
+exports.retrieveuserlistFromSettings = function(req, res, next) {
+  var resp = new Array();
+  var i = 0;
+  var idofcurrentuser;
+  var idofcurrentuser = req.user.id;
+
+  db.all("SELECT id, username, is_admin, name, created, password FROM users WHERE id = " + idofcurrentuser , function(err, rows) {
+    rows.forEach(function(row) {
+      resp[i] = new Object();
+      resp[i].id = row.id;
+      resp[i].username = row.username;
+      resp[i].password = row.password;
+      resp[i].name = row.name;
+      i = i + 1;
+    })
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(resp));
+  });
+};

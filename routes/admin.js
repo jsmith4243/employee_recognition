@@ -1,4 +1,5 @@
 var crypto = require('crypto');
+var csv = require('../csv/index');
 var db = require('../db/index');
 
 function hashPassword(password, salt) {

@@ -22,14 +22,7 @@ exports.registration = function(req, res, next) {
   res.render('userRegistration', { title: 'User Registration' });
 };
 
-exports.administration = function(req, res, next) {
-  if (req.isAuthenticated() && req.user.is_admin === 1) {
-    next();
-  }
-  else {
-    res.render('adminLogin', { title: 'Administration Login' });
-  }
-} , function(req, res) {
+exports.administration = function(req, res) {
   res.render('administration', { title: 'Administration' });
 };
 

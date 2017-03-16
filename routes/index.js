@@ -27,7 +27,14 @@ var chart = require('./chart');
 
 router.get('/', site.index);
 router.get('/userRegistration', site.registration);
-router.get('/administration', site.administration);
+router.get('/administration', function(req, res, next) {
+  if (req.isAuthenticated() && req.user.is_admin === 1) {
+    next();
+  }
+  else {
+    res.render('adminLogin', { title: 'Administration Login' });
+  }
+}, site.administration);
 router.get('/userSettings', site.userSettings);
 
 router.post('/login', passport.authenticate('user-local', { successRedirect: '/' }));
@@ -36,6 +43,8 @@ router.post('/admin-login', passport.authenticate('admin-local', { successRedire
 router.get('/logout', user.logout);
 router.post('/register', upload.single('signature'), user.register);
 router.get('/mysignature', user.mysignature);
+router.get('/resetpassword', user.passwordresetget);
+router.post('/resetpassword', user.passwordresetpost);
 router.post('/edituserFromSettings', user.edituserFromSettings);
 router.post('/retrieveuserlistFromSettings', user.retrieveuserlistFromSettings);
 

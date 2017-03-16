@@ -325,16 +325,7 @@ router.post('/deleteaward', admin.deleteaward);
 
 router.post('/retrieveawardlist', admin.retrieveawardlist);
 
-
-
-
-router.get('/userSettings', function(req, res) 
-{
-  
-  res.render('settings', { title: 'Settings' });
-
-
-});
+router.get('/userSettings', site.userSettings);
 
 router.post('/edituserFromSettings', user.edituserFromSettings);
 

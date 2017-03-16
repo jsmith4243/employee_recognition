@@ -32,3 +32,8 @@ exports.administration = function(req, res, next) {
 } , function(req, res) {
   res.render('administration', { title: 'Administration' });
 };
+
+exports.userSettings = function(req, res) 
+{
+  res.render('settings', { title: 'Settings' });
+};

@@ -41,6 +41,7 @@ function hashPassword(password, salt) {
 
 var award = require('./award');
 var site = require('./site');
+var user = require('./user');
 
 router.get('/', site.index);
 
@@ -232,59 +233,11 @@ router.post('/login', passport.authenticate('user-local', { successRedirect: '/'
 
 router.post('/admin-login', passport.authenticate('admin-local', { successRedirect: '/administration' }));
 
-router.get('/logout', function(req, res) {
-  req.logout();
-  res.redirect('/');
-})
+router.get('/logout', user.logout);
 
-router.post('/register', upload.single('signature'), function(req, res, next) {
-  console.log("User registration post request received.");
-  console.log("username is: " + req.body.username);
-  console.log("password is: " + req.body.password);
-  console.log("name is: " + req.body.name);
-  console.log("filename is: " + req.file.filename);
-  console.log("mimetype is: " + req.file.mimetype);
-  // var id = req.body.id; //for post 
-  //id = null; 
-  
-  var username = req.body.username;
-  var password = req.body.password;
-  var salt = crypto.randomBytes(128).toString('base64');
+router.post('/register', upload.single('signature'), user.register);
 
-  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, 0, ?, ?, ?, ?)" );
-  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000), req.body.name, req.file.filename, req.file.mimetype, function(err, row) {
-    if (err) {
-      res.send("Error registering user" + err);  
-    }
-    else {
-    console.log("username: " + username);
-    console.log("salt: " + salt);
-    console.log("hash: " + password);
-    
-    res.send("User Registered");  
-    }
-  });
-  stmt.finalize(); 
-
-
-});
-
-router.get('/mysignature', function(req, res) {
-  if (req.user && req.user.is_admin === 0 && req.user.signature) {
-    var s = fs.createReadStream('uploads/' + req.user.signature);
-    s.on('open', function () {
-      res.set('Content-Type', req.user.mimetype);
-      s.pipe(res);
-    });
-    s.on('error', function() {
-      res.set('Content-Type', 'text/plain');
-      res.status(404).end('Not found');
-    });
-  }
-  else {
-    res.redirect('/');
-  }
-});
+router.get('/mysignature', user.mysignature);
 
 router.get('/reports', function(req, res) {
  if (req.isAuthenticated() && req.user.is_admin === 1) {

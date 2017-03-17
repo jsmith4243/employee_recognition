@@ -79,13 +79,13 @@
       <div class="form-group">
         <label class="control-label col-sm-3" for="name">Recipient name:</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" name="name" id="name" onKeyup="validateForm()" required>
+          <input type="text" class="form-control" name="name" id="name" onChange="validateForm()" onFocus="validateForm()" onBlur="validateForm()" onKeyUp="validateForm()" required>
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-3" for="email">Recipient email:</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" name="email" id="email" onKeyup="validateForm()" required>
+          <input type="text" class="form-control" name="email" id="email" onChange="validateForm()" onFocus="validateForm()" onBlur="validateForm()" onKeyUp="validateForm()" required>
         </div>
       </div>
       <div class="form-group">
@@ -102,7 +102,7 @@
         <label class="control-label col-sm-3" for="date">Date:</label>
         <div class="col-sm-9">
           <div class='input-group date' id='datetimepicker1'>
-            <input type='text' class="form-control" name="date" id="date" onKeyup="validateForm()" required />
+            <input type='text' class="form-control" name="date" id="date" onChange="validateForm()" onFocus="validateForm()" onBlur="validateForm()" onKeyUp="validateForm()" required />
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-calendar"></span>
             </span>

@@ -7,7 +7,7 @@ exports.index = function(req, res, next) {
     }
     else {
       db.all('SELECT * FROM classes', function(err, classes) {
-        db.all('SELECT e.id AS id, e.class AS class, e.recipient AS recipient, e.email AS email, e.user AS user, e.granted AS granted FROM entries e LEFT JOIN classes c ON class = c.id WHERE user = ?', req.user.id, function(err, entries) {
+        db.all('SELECT e.id AS id, e.class AS class, c.name AS name, e.recipient AS recipient, e.email AS email, e.user AS user, e.granted AS granted FROM entries e LEFT JOIN classes c ON class = c.id WHERE user = ?', req.user.id, function(err, entries) {
           res.render('awardDisplay', { title: 'Awards', user: req.user.name, classes: classes, entries: entries });
         });
       });

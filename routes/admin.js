@@ -47,7 +47,6 @@ exports.reports = function(req, res) {
       });
     }
     else {
-
       var department = parseInt(req.query['department']);
       var division = parseInt(req.query['division']);
       var params = [];
@@ -97,7 +96,24 @@ exports.reports = function(req, res) {
                 res.send(csv.export(entries, ['sender', 'type', 'recipient', 'email', 'granted', 'division', 'department'], ['Sender', 'Type', 'Recipient', 'Email', 'Granted', 'Division', 'Department']));
               }
               else {
-                res.render('allawards', { title: 'Administration', entries: entries, departments: departments, divisions: divisions });
+                var chartoptions = [ {id: 0, name: ''}, {id: 1, name: 'User', groupby: 'sender'}, {id: 2, name: 'Department', groupby: 'department'}, {id: 3, name: 'Division', groupby: 'division'} ];
+                var selectedchart = parseInt(req.query['chart']);
+                if (selectedchart >= 1 && selectedchart <= 3) {
+                  chartoptions[selectedchart].selected = true;
+                  var chartquery = 'SELECT u.name AS sender, count(entries.id) AS count, c.name AS type, dv.name AS division, dp.name AS department FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' GROUP BY ' + chartoptions[selectedchart].groupby;
+                  console.log(chartquery);
+                  db.all(chartquery, ...params, function(err, counts) {
+                    console.log(err);
+                    var formattedcounts = counts.map(function (row) {
+                      return { category: row[chartoptions[selectedchart].groupby], count: row.count };
+                    });
+                    var chartjson = JSON.stringify({ title: 'Awards sent by ' + chartoptions[selectedchart].name, label: chartoptions[selectedchart].name, data: formattedcounts });
+                    res.render('allawards', { title: 'Administration', entries: entries, departments: departments, divisions: divisions, chartoptions: chartoptions, chartjson: chartjson });
+                  });
+                }
+                else {
+                  res.render('allawards', { title: 'Administration', entries: entries, departments: departments, divisions: divisions, chartoptions: chartoptions, chartjson: '' });
+                }
               }
             });          
           });

@@ -23,7 +23,6 @@ var award = require('./award');
 var site = require('./site');
 var user = require('./user');
 var admin = require('./admin');
-var chart = require('./chart');
 
 var isUser = function(req, res, next) {
   if (req.isAuthenticated() && req.user.is_admin === 0) {
@@ -70,9 +69,5 @@ router.post('/deleteuser', isAdmin, admin.deleteuser);
 router.post('/deleteadmin', isAdmin, admin.deleteadmin);
 router.post('/edituser', isAdmin, admin.edituser);
 router.post('/deleteaward', admin.deleteaward);
-
-router.get('/chart', chart.chart);
-router.post('/getuserawardcount', chart.getuserawardcount);
-router.post('/getemployeeawardcount', chart.getemployeeawardcount);
 
 module.exports = router;

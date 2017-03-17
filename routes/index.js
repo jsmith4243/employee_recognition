@@ -59,7 +59,7 @@ router.post('/userSettings', isUser, upload.single('signature'), user.updatesett
 
 router.get('/test-download', award.test);
 router.get('/award-preview', award.preview);
-router.post('/sendaward', award.send);
+router.post('/sendaward', isUser, award.send);
 
 router.get('/createuser', isAdmin, admin.createuser);
 router.get('/createadmin', isAdmin, admin.createadmin);

@@ -11,7 +11,7 @@ function hashPassword(password, salt) {
 var db = new sqlite3.Database('./database.db');
 
 function createTable1() {
-    db.exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, salt TEXT NOT NULL, is_admin INTEGER, name TEXT, signature TEXT, mimetype TEXT, created INTEGER, division INTEGER, department INTEGER, FOREIGN KEY(division) REFERENCES divisions(id), FOREIGN KEY(department) REFERENCES departments(id), CONSTRAINT name_unique UNIQUE (username, is_admin) ON CONFLICT FAIL);", createTable2); 
+    db.exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, salt TEXT NOT NULL, is_admin INTEGER, name TEXT, signature TEXT, mimetype TEXT, created INTEGER, division INTEGER, department INTEGER, resethash TEXT, resetdate INTEGER, FOREIGN KEY(division) REFERENCES divisions(id), FOREIGN KEY(department) REFERENCES departments(id), CONSTRAINT name_unique UNIQUE (username, is_admin) ON CONFLICT FAIL);", createTable2); 
 }
 function createTable2() {
     db.exec("CREATE TABLE IF NOT EXISTS classes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE);", createTable3); 

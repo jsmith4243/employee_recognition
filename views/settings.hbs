@@ -1,268 +1,68 @@
 <html lang="en">
-
-  <title>{{title}}</title>
-  
-  <link rel ='stylesheet' href='stylesheets/style.css' />
-  
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  
-  
-  
-  <script>
-  
-  
-    $(document).ready(function()
-    {
+  <head>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="stylesheets/style.css" />
     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
-
-
-      
-      var httpRequest = new XMLHttpRequest();
-      
-      if (!httpRequest) 
-      {
-          alert('Giving up : Cannot create an XMLHTTP instance');
-          return false;
-      }
-      
-      httpRequest.onreadystatechange = function(){
-      
-        if (httpRequest.readyState === XMLHttpRequest.DONE) 
-        {
-
-          if (httpRequest.status === 200) 
-          {
-          
-            //alert(httpRequest.responseText); //if its json you call JSON parse to get a json object which is same as javascript object
-            var arr = JSON.parse(httpRequest.responseText);
-            
-           $("#usertable").empty();
-           
-           var examplefirstname = "examplefirstname";
-           var examplelastname = "examplelastname";
-           
-           
-           for(i = 0; i < arr.length; i++)
-           {
-             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + arr[i].name + "</td>" +  "<td>" + arr[i].password + "</td>" );
-           }
-           
-
-           
-
-             
-  
-            var id = arr[0].id;
-
-
-            var username = arr[0].username;
-
-            var firstname = examplefirstname;
-
-            var lastname = examplelastname;
-
-            var name = arr[0].name;
-             
-
-             
-            $("#usernameedit").val( username );
-
-            $("#firstnameedit").val( firstname );
-
-            $("#lastnameedit").val( lastname );
-
-            $("#nameedit").val( name );
-
-            //$("#usereditbutton").attr("id",id);
-             
-
-             
-             
-             
-             
-
-             
-             
-      
-
-    
-            var id = 555;
-
-           
-           $("#usereditbutton").click(function() {
-           
-             var httpRequest = new XMLHttpRequest();
-      
-             if (!httpRequest) 
-             {
-               alert('Giving up : Cannot create an XMLHTTP instance');
-               return false;
-             }
-           
-             httpRequest.open('POST', '/edituserFromSettings', true);
-
-             httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-             
-             var usernametosend = $("#usernameedit").val();
-
-             var nametosend = $("#nameedit").val();
-
-             var passwordtosend = $("#passwordedit").val();
-             
-             
-             //id = $(this).attr("id");
-             
-             //httpRequest.send("userid="+ id);
-             httpRequest.send("userid="+ id + "&username=" + usernametosend + "&name=" + nametosend+ "&password=" + passwordtosend    );
-
-
-
-              //$("#usertable").empty();
-
-           
-
-             //$("#usertable").append("<tr>" + "<th scope=row>" + id + "</th>" +  "<td>" + usernametosend + "</td>" + "<td>" + nametosend + "</td>" +  "<td>" + passwordtosend + "</td>" );
-
-             location.reload(true);
-
-                   
-           
-           });
-            
-           //$("#usertable").append("<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>");
-            
-           /* 
-                      <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>button</td>
-          <td>button</td>
-          */
-            
-            console.log(">>>" + arr[0].username);
-            
-          } 
-      
-          else 
-      
-      
-          {
-      
-            //alert('There was a problem with the request.');
-       
-          }
-          
-        }
-        
-      }
-
-
-      
-      httpRequest.open('POST', '/retrieveuserlistFromSettings', true);
-      
-      httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      
-      httpRequest.send();
-      
-      
-
-    });
-
-  
-  </script>
-
-
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  </head>
   <body>
-  
     <h1>{{title}}</h1>
    
-
-    
     <div class="btn-group" role="group" aria-label="...">
-      <a href="/logout" class="btn btn-default">Log Out</a>
-      <a href="http://localhost:3000/userSettings"><button type="button" class="btn btn-default">User Settings</button></a>
-      
+      <a href="/logout"><button type="button" class="btn btn-default">Log Out</button></a>
+      <a href="/"><button type="button" class="btn btn-default">Back</button></a>
     </div>
     
+    <h2>Edit Account:</h2>
+    <div class="panel panel-default">
 
-
-    
-    <br>
-    <br>
-    
-    <h2>Your Account Information:</h2>
-    
-    <br>
-    <br>
-    
-    <table class="table">
-      <thead>
-        <tr>
-
-          <th>Id #</th>
-          <th>User Name</th>
-          <th>Name</th>
-          <th>Password</th>
-
-        </tr>
-      </thead>
-      <tbody id="usertable">
-        <tr>
-
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-
-        </tr>
-
-      </tbody>
-    </table>
-    
-    <br>
-    <br>
-    <h2>Edit Your Account Information:</h2>
-    <br>
-    <br>
-    
-    <div class="input-group">
-      
-      <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="User Name" aria-describedby="basic-addon1" id="usernameedit">
+    <div class="panel-body">
+    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label class="control-label col-sm-3">Email address:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" value="{{username}}" disabled>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="name">Name:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" name="name" id="name" value="{{name}}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="signature">Signature:</label>
+        <div class="col-sm-9">
+          <p><img src="/mysignature"></p>
+          <input type="file" id="signature" name="signature">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="password">Current password:</label>
+        <div class="col-sm-9">
+          <input type="password" class="form-control" id="currentpassword" name="currentpassword" placeholder="Required if changing password.">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-3" for="password">New password:</label>
+        <div class="col-sm-9">
+          <input type="password" class="form-control" id="newpassword" name="newpassword">
+        </div>
+      </div>
+      <div class="pull-right">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
     </div>
-    
-    <div class="input-group">
-      <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="password" class="form-control" placeholder="Password" aria-describedby="basic-addon1" id="passwordedit">
     </div>
-    
-    <div class="input-group">
-      
-      <span class="input-group-addon" id="basic-addon1">@</span>
-      <input type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" id="nameedit">
-    </div>
-    
-
-    
-    <label class="control-label">User Signature Image File</label>
-    <input id="input-1edit" type="file" class="file">
-
-    <button type="button" class="btn btn-default" id="usereditbutton">Edit User</button>
-
-    
-
   </body>
 <html>

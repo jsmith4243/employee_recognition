@@ -39,7 +39,7 @@ var isAdmin = function(req, res, next) {
     next();
   }
   else {
-    res.render('adminLogin');
+    res.render('adminLogin', { title: 'Administration Login'});
   }
 };
 

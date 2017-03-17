@@ -133,7 +133,7 @@
            
            for(i = 0; i < arr.length; i++)
            {
-             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username + "</td>" + "<td>" + arr[i].name + "</td>"   + "<td><button type=\"button\" class=\"btn btn-default tableeditbutton\"  userid=\"" + arr[i].id + "\"   id=\"tableeditbutton\" username=\"" + arr[i].username + "\" name=\"" + arr[i].name + "\" lastname=\"" + arr[i].lastname + "\" >Edit</button></td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
+             $("#usertable").append("<tr>" + "<th scope=row>" + arr[i].id + "</th>"+  "<td>" + arr[i].isadmin + "</td>" +  "<td>" + arr[i].username + "</td>" + "<td>" + arr[i].name + "</td>"   + "<td><button type=\"button\" class=\"btn btn-default tableeditbutton\"  userid=\"" + arr[i].id + "\"   id=\"tableeditbutton\" username=\"" + arr[i].username + "\" name=\"" + arr[i].name + "\" lastname=\"" + arr[i].lastname + "\" >Edit</button></td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
            }
            
            $(".tabledeletebutton").click(function() {
@@ -403,6 +403,11 @@
       <div class="form-group">
         <label for="signature">Upload signature file</label>
         <input type="file" class="form-control" id="signature" name="signature">
+      </div>
+
+      <div class="form-group">
+        <label for="signature">Is administrator?</label>
+        <input type="checkbox" class="form-control" id="isadmin" name="isadmin">
       </div>
 
     

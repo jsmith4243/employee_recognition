@@ -9,64 +9,100 @@ function hashPassword(password, salt) {
   return hash.digest('hex');
 }
 
+exports.createuser = function(req, res) {
+  db.all('SELECT id, name FROM departments', function(err, departments) {
+    db.all('SELECT id, name FROM divisions', function(err, divisions) {
+      res.render('createuser', { title: 'Create User', username: req.user.username, name: req.user.name, signature: req.user.signature, divisions: divisions, departments: departments });
+    });
+  });
+}
+
+exports.createadmin = function(req, res) {
+  res.render('createadmin', { title: 'Create Admin'});
+}
+
+exports.createadminpost = function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+  var salt = crypto.randomBytes(128).toString('base64');
+  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin) VALUES (?, ?, ?, 1)" );
+  stmt.run(username, hashPassword(password, salt), salt, function(err, row) {
+    if (err) {
+      res.send("Error registering user" + err);  
+    }
+    else {
+      res.redirect('/administration');
+    }
+  });
+
+}
+
 exports.reports = function(req, res) {
- if (req.isAuthenticated() && req.user.is_admin === 1) {
-
-    var department = parseInt(req.query['department']);
-    var division = parseInt(req.query['division']);
-    var params = [];
-    var filter = ''
-    if (department) {
-      filter += ' dp.id = ?';
-      params.push(department);
-    }
-    if (division) {
-      if (params.length > 0) {
-        filter += ' AND'
-      }
-      filter += ' dv.id = ?';
-      params.push(division);
-    }
-    if (params.length > 0) {
-      filter = ' WHERE' + filter;
-    }
-
+  if (req.isAuthenticated() && req.user.is_admin === 1) {
     var show = req.query['show'];
 
-    if (show === 'users') {
-      var query = 'SELECT u.name AS name, username AS email, dv.name AS division, dp.name AS department, COUNT(e.id) AS count FROM entries e LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' GROUP BY u.id';
-
-      db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
-        db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
-          db.all(query, ...params, function(err, users) {
-            if (req.query['submit'] === 'csv') {
-              res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
-              res.setHeader('Content-Type', 'text/csv');
-              res.send(csv.export(users, ['name', 'email', 'division', 'department', 'count'], ['Name', 'Email', 'Division', 'Department', 'Count']));
-            }
-            else {
-              res.render('userstats', { title: 'User Statistics', users: users, departments: departments, divisions: divisions });
-            }
-          });          
-        });
+    if (show === 'admins') {
+      db.all('SELECT id, username, name, id = ? AS me FROM users WHERE is_admin = 1', req.user.id, function(err, admins) {
+        res.render('manageadmins', { title: 'Administration', admins: admins });
       });
     }
     else {
-      var query = 'SELECT u.name AS sender, signature, c.name AS type, class, recipient, email, granted, dv.name AS division, dp.name AS department FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' ORDER BY granted DESC';
-      db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
-        db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
-          db.all(query, ...params, function(err, entries) {
-            if (req.query['submit'] === 'csv') {
-              res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
-              res.setHeader('Content-Type', 'text/csv');
-              res.send(csv.export(entries, ['sender', 'type', 'recipient', 'email', 'granted', 'division', 'department'], ['Sender', 'Type', 'Recipient', 'Email', 'Granted', 'Division', 'Department']));
-            }
-            else {
-              res.render('allawards', { title: 'All Awards', entries: entries, departments: departments, divisions: divisions });
-            }
-          });          
+
+      var department = parseInt(req.query['department']);
+      var division = parseInt(req.query['division']);
+      var params = [];
+      var filter = ''
+      if (department) {
+        filter += ' dp.id = ?';
+        params.push(department);
+      }
+      if (division) {
+        if (params.length > 0) {
+          filter += ' AND'
+        }
+        filter += ' dv.id = ?';
+        params.push(division);
+      }
+      if (params.length > 0) {
+        filter = ' WHERE' + filter;
+      }
+
+
+      if (show === 'users') {
+        var query = 'SELECT u.name AS name, u.id AS id, username AS email, dv.name AS division, dp.name AS department, COUNT(e.id) AS count FROM entries e LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' GROUP BY u.id';
+
+        db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
+          db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
+            db.all(query, ...params, function(err, users) {
+              if (req.query['submit'] === 'csv') {
+                res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
+                res.setHeader('Content-Type', 'text/csv');
+                res.send(csv.export(users, ['name', 'email', 'division', 'department', 'count'], ['Name', 'Email', 'Division', 'Department', 'Count']));
+              }
+              else {
+                res.render('manageusers', { title: 'Administration', users: users, departments: departments, divisions: divisions });
+              }
+            });          
+          });
         });
-      });
+      }
+      else {
+        var query = 'SELECT u.name AS sender, entries.id AS id, signature, c.name AS type, class, recipient, email, granted, dv.name AS division, dp.name AS department FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' ORDER BY granted DESC';
+        db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
+          db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
+            db.all(query, ...params, function(err, entries) {
+              if (req.query['submit'] === 'csv') {
+                res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
+                res.setHeader('Content-Type', 'text/csv');
+                res.send(csv.export(entries, ['sender', 'type', 'recipient', 'email', 'granted', 'division', 'department'], ['Sender', 'Type', 'Recipient', 'Email', 'Granted', 'Division', 'Department']));
+              }
+              else {
+                res.render('allawards', { title: 'Administration', entries: entries, departments: departments, divisions: divisions });
+              }
+            });          
+          });
+        });
+      }
     }
   }
   else {
@@ -74,75 +110,93 @@ exports.reports = function(req, res) {
   }
 };
 
-exports.addaward = function(req, res, next) {
-  var name = req.body.name;
-  var email = req.body.email;
-  var awardedby = req.body.awardedby
-  var awardtype = 222;
-  var date = 223;
-
-  var stmt = db.prepare( "INSERT INTO entries (recipient, email, class, granted) VALUES (?, ?, ?, ?)" );
-  stmt.run(name, email, awardtype, date), function(err, row) {
-    if (err) {
-      res.send("Error registering user" + err);  
-    }
-    else {
-      res.send("Award Added");  
-    }
-  };
-  stmt.finalize(); 
-};
-
 exports.deleteaward = function(req, res, next) {
-  var awardid = req.body.awardid;
-  
-  var stmt = db.prepare( "DELETE FROM entries WHERE id = ?" );
-  stmt.run(awardid, function(err, row) {
-    if (err) {
-      res.send("Error deleting user" + err);  
+  if (req.isAuthenticated()) {
+    var id = req.body.id;
+    var query;
+    var params = [id];
+
+    if (req.user.is_admin === 1) {
+      query = "DELETE FROM entries WHERE id = ?";
     }
     else {
-      console.log("id: " + awardid);
-      res.send("Award deleted");  
+      query = "DELETE FROM entries WHERE id = ? AND user = ?";
+      params.push(req.user.id);
     }
-  });
-  stmt.finalize(); 
-};
-
-exports.retrieveawardlist = function(req, res, next) {
-  var resp = new Array();
-  var i = 0;
-
-  db.all("SELECT id, recipient, email, class, granted FROM entries", function(err, rows) {
-    rows.forEach(function(row) {
-      resp[i] = new Object();
-      resp[i].id = row.id;
-      resp[i].recipient = row.recipient;
-      resp[i].email = row.email;
-      resp[i].class = row.class;
-      resp[i].granted = row.granted;
-      i = i + 1;
-    })
-    
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(resp));
-  });
+    console.log(params);
+    var stmt = db.prepare(query);
+    stmt.run(...params, function(err, row) {
+      if (err) {
+        res.send("Error deleting award" + err);  
+      }
+      else {
+        res.send("Award deleted");  
+      }
+    });
+  }
+  else {
+    res.redirect('/');
+  }
 };
 
 exports.deleteuser = function(req, res, next) {
   var userid = req.body.userid;
 
-  var stmt = db.prepare( "DELETE FROM users WHERE id = ?" );
-  stmt.run(userid, function(err, row) {
+  var delEntries = db.prepare('DELETE FROM entries WHERE user = ?');
+  delEntries.run(userid, function(err, row) {
     if (err) {
       res.send("Error deleting user" + err);  
     }
     else {
-      res.send("User deleted");  
+      var delUser = db.prepare( "DELETE FROM users WHERE id = ?" );
+      delUser.run(userid, function(err, row) {
+        if (err) {
+          res.send("Error deleting user" + err);  
+        }
+        else {
+          res.send("User deleted");  
+        }
+      });
     }
   });
-  stmt.finalize(); 
 };
+
+exports.deleteadmin = function(req, res, next) {
+  var userid = req.body.userid;
+
+  if (userid == req.user.id) {
+    res.send("Cannot delete own account.");
+  }
+  else {
+    var delUser = db.prepare( "DELETE FROM users WHERE id = ?" );
+    delUser.run(userid, function(err, row) {
+      if (err) {
+        res.send("Error deleting user" + err);  
+      }
+      else {
+        res.send("User deleted");  
+      }
+    });
+  }
+};
+
+exports.edituserget = function(req, res) {
+  var id = req.query.id;
+
+  db.get('SELECT id, username, name, signature, division, department FROM users WHERE id = ?', id, function(err, row) {
+    if (!row) {
+      // error
+    }
+    else {
+      db.all('SELECT id, name, id IS ? AS selected FROM departments', row.department ? row.department : 0, function(err, departments) {
+        db.all('SELECT id, name, id IS ? AS selected FROM divisions', row.division ? row.division : 0, function(err, divisions) {
+          res.render('edituser', { title: 'Edit User', username: row.username, name: row.name, signature: row.signature, divisions: divisions, departments: departments });
+        });
+      });
+    }
+  });
+
+}
 
 exports.edituser = function(req, res, next) {
   var userid = req.body.userid;
@@ -163,61 +217,4 @@ exports.edituser = function(req, res, next) {
     }
   });
   stmt.finalize(); 
-};
-
-exports.retrieveuserlist = function(req, res, next) {
-  var resp = new Array();
-  var i = 0;
-  db.all("SELECT id, username, is_admin, name, created FROM users", function(err, rows) {
-    rows.forEach(function(row) {
-      resp[i] = new Object();
-      resp[i].id = row.id;
-      resp[i].username = row.username;
-      resp[i].name = row.name;
-      resp[i].isadmin = row.is_admin;
-      i = i + 1;
-    })
-
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(resp));
-  });
-};
-
-exports.registerfromadministration = function(req, res, next) {
-
-  if (req.isAuthenticated() && req.user.is_admin === 1) 
-  {
-
-    var username = req.body.username;
-    var password = req.body.password;
-    var salt = crypto.randomBytes(128).toString('base64');
-
-    var isadmin;
-    if (req.body.isadmin == "on")
-    {
-      isadmin = 1;
-    }
-    else
-    {
-      isadmin = 0;
-    }
-
-    var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, ?, ?, ?, ?, ?)" );
-    stmt.run(username, hashPassword(password, salt), salt, isadmin, Math.floor(Date.now() / 1000), req.body.name, req.file.filename, req.file.mimetype, function(err, row) {
-      if (err) 
-      {
-        res.send("Error registering user" + err);  
-      }
-      else 
-      {
-        res.send("User Registered");  
-      }
-    });
-  
-
-
-  }
-
-
-
 };

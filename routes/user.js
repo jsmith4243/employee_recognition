@@ -18,25 +18,28 @@ exports.logout = function(req, res) {
 exports.register = function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
+  var division = req.body.division;
+  var department = req.body.department;
+  var filename = 'blank.png';
+  var mimetype = 'image/png';
+  if (req.file) {
+    filename = req.file.filename;
+    mimetype = req.file.mimetype;
+  }
   var salt = crypto.randomBytes(128).toString('base64');
 
-  var isadmin;
-  if (req.body.isadmin == "on")
-  {
-    isadmin = 1;
-  }
-  else
-  {
-    isadmin = 0;
-  }
-
-  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, 0, ?, ?, ?, ?)" );
-  stmt.run(username, hashPassword(password, salt), salt, isadmin, Math.floor(Date.now() / 1000), req.body.name, req.file.filename, req.file.mimetype, function(err, row) {
+  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype, division, department) VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?)" );
+  stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000), req.body.name, filename, mimetype, division, department, function(err, row) {
     if (err) {
       res.send("Error registering user" + err);  
     }
     else {
-      res.send("User Registered");  
+      if (req.isAuthenticated() && req.user.is_admin === 1) {
+        res.redirect('/administration');
+      }
+      else {
+        res.send("User Registered");  
+      }
     }
   });
   stmt.finalize(); 
@@ -99,7 +102,7 @@ exports.passwordresetpost = function(req, res, next) {
           var id = crypto.randomBytes(128).toString('base64').replace('+', '-').replace('/', '_');
           var stmt = db.prepare("UPDATE users SET resethash = ?, resetdate = ? WHERE id = ?");
           stmt.run(hashPassword(id, user['salt']), Math.floor(Date.now()), user['id'], function(err, row) {
-            var link = 'http://localhost:3000/resetpassword?email=' + encodeURIComponent(username) + '&is_admin=' + is_admin + '&id=' + encodeURIComponent(id);
+            var link = require('../config').hostname + '/resetpassword?email=' + encodeURIComponent(username) + '&is_admin=' + is_admin + '&id=' + encodeURIComponent(id);
             var transporter = nodemailer.createTransport('smtps://recognitionprog%40gmail.com:pa1234ss@smtp.gmail.com');
             var mailOptions = {
               from: '"Gemini Company Awards" <recognitionprog@gmail.com>',
@@ -156,6 +159,8 @@ exports.mysignature = function(req, res) {
 exports.updatesettings = function(req, res, next) {
   var id = req.user.id;
   var name = req.body.name;
+  var division = req.body.division;
+  var department = req.body.department;
   var currentpassword = req.body.currentpassword;
   var newpassword = req.body.newpassword;
 
@@ -165,8 +170,8 @@ exports.updatesettings = function(req, res, next) {
     updateSignature.run(req.file.filename, req.file.mimetype, id);
   }
 
-  var updateName = db.prepare('UPDATE users SET name = ? WHERE id = ?');
-  updateName.run(name, id, function(err, row) {
+  var updateInfo = db.prepare('UPDATE users SET name = ?, division = ?, department = ? WHERE id = ?');
+  updateInfo.run(name, division, department, id, function(err, row) {
 
     if (newpassword != null && newpassword.length > 0) {
       db.get('SELECT password, salt FROM users WHERE id = ?', id, function(err, row) {

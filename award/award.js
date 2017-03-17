@@ -2,7 +2,7 @@ var latex = require("latex");
 var moment = require('moment');
 var path = require('path');
 
-var command = "C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64\\miktex-pdflatex.exe";
+var command = require('../config').pdflatex;
 
 var options = { command : command };
 

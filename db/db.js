@@ -17,7 +17,7 @@ function createTable2() {
     db.exec("CREATE TABLE IF NOT EXISTS classes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE);", createTable3); 
 }
 function createTable3() {
-    db.exec("CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, class INTEGER, recipient TEXT, email TEXT, user INTEGER, granted INTEGER, FOREIGN KEY(class) REFERENCES classes(id), FOREIGN KEY(user) REFERENCES users(id))", createTable4); 
+    db.exec("CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, class INTEGER, recipient TEXT, email TEXT, user INTEGER, granted INTEGER, FOREIGN KEY(class) REFERENCES classes(id), FOREIGN KEY(user) REFERENCES users(id) ON DELETE CASCADE)", createTable4); 
 }
 function createTable4() {
     db.exec("CREATE TABLE IF NOT EXISTS divisions (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)", createTable5); 
@@ -70,6 +70,13 @@ function insertUser2() {
     var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin) VALUES(-2, ?, ?, ?, 1)");
     var salt = crypto.randomBytes(128).toString('base64');
     stmt.run("admin@example.com", hashPassword("password", salt), salt);
+    stmt.finalize(insertUser3);
+}
+
+function insertUser3() {
+    var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin) VALUES(-3, ?, ?, ?, 1)");
+    var salt = crypto.randomBytes(128).toString('base64');
+    stmt.run("admin2@example.com", hashPassword("password", salt), salt);
     stmt.finalize(insertUsers);
 }
 

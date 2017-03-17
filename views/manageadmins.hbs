@@ -1,0 +1,55 @@
+<html lang="en">
+  <head>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  </head>
+  <body>
+  
+    <h1>{{title}}</h1>
+
+    <p><a href="/logout">Log Out</a></p>
+    <p><a href="/administration?show=awards">All Awards</a></p>
+    <p><a href="/administration?show=users">User Management</a></p>
+    <p><a href="/chart">Charts</a></p>
+
+    <h2>Admin Accounts</h2>
+    <p>
+      <a href="/createadmin">Create Admin</a>
+    </p>
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="usertable">
+          {{#each admins}}
+            <tr>
+              <td>{{this.username}}</td>
+              <td>
+                <form action="/deleteadmin" method="post" style="margin: 0px;">
+                  <input type="hidden" name="userid" value="{{this.id}}">
+                  <button type="submit" class="btn btn-danger" {{#if this.me}}disabled="disabled"{{/if}}>Delete</button>
+                </form>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+  </body>
+<html>

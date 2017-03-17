@@ -45,7 +45,7 @@ var isAdmin = function(req, res, next) {
 
 router.get('/', site.index);
 router.get('/userRegistration', site.registration);
-router.get('/administration', isAdmin, site.administration);
+router.get('/administration', isAdmin, admin.reports);
 router.get('/userSettings', isUser, site.userSettings);
 
 router.post('/login', passport.authenticate('user-local', { successRedirect: '/' }));
@@ -62,14 +62,14 @@ router.get('/test-download', award.test);
 router.get('/award-preview', award.preview);
 router.post('/sendaward', award.send);
 
-router.get('/reports', admin.reports);
-router.post('/deleteuser', admin.deleteuser);
-router.post('/edituser', admin.edituser);
-router.post('/retrieveuserlist', admin.retrieveuserlist);
-router.post('/addaward', admin.addaward);
+router.get('/createuser', isAdmin, admin.createuser);
+router.get('/createadmin', isAdmin, admin.createadmin);
+router.post('/createadmin', isAdmin, admin.createadminpost);
+router.get('/edituser', isAdmin, admin.edituserget);
+router.post('/deleteuser', isAdmin, admin.deleteuser);
+router.post('/deleteadmin', isAdmin, admin.deleteadmin);
+router.post('/edituser', isAdmin, admin.edituser);
 router.post('/deleteaward', admin.deleteaward);
-router.post('/retrieveawardlist', admin.retrieveawardlist);
-router.post('/registerfromadministration', admin.registerfromadministration);
 
 router.get('/chart', chart.chart);
 router.post('/getuserawardcount', chart.getuserawardcount);

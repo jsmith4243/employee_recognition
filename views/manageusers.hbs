@@ -18,8 +18,15 @@
   
     <h1>{{title}}</h1>
 
-    <p><a href="/reports?show=awards">All Awards</a></p>
+    <p><a href="/logout">Log Out</a></p>
+    <p><a href="/administration?show=awards">All Awards</a></p>
+    <p><a href="/administration?show=admins">Admin Accounts</a></p>
+    <p><a href="/chart">Charts</a></p>
 
+    <h2>User Management</h2>
+    <p>
+      <a href="/createuser">Create User</a>
+    </p>
     <div class="panel panel-default">
       <div class="panel-body">
         <form action="" method="get" class="form-inline">
@@ -43,7 +50,7 @@
           </select>
           </div>
           <button type="submit" name="submit" value="submit" class="btn btn-primary">Filter</button>
-          <button type="submit" name="submit" value="csv" class="btn">Download as CSV</button>
+          <button type="submit" name="submit" value="csv" class="btn btn-default">Download as CSV</button>
         </form>
       </div>
     </div>
@@ -57,6 +64,8 @@
             <th>Division</th>
             <th>Department</th>
             <th>Awards sent</th>
+            <th>Edit</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody id="awardtable">
@@ -67,6 +76,13 @@
               <td>{{this.division}}</td>
               <td>{{this.department}}</td>
               <td>{{this.count}}</td>
+              <td><a href="/edituser?id={{this.id}}" type="button" class="btn btn-default">Edit</button></td>
+              <td>
+                <form action="/deleteuser" method="post" style="margin: 0px;">
+                  <input type="hidden" name="userid" value="{{this.id}}">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
             </tr>
           {{/each}}
         </tbody>

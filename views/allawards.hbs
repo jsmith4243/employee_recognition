@@ -18,7 +18,12 @@
   
     <h1>{{title}}</h1>
 
-    <p><a href="/reports?show=users">User Statistics</a></p>
+    <p><a href="/logout">Log Out</a></p>
+    <p><a href="/administration?show=users">User Management</a></p>
+    <p><a href="/administration?show=admins">Admin Accounts</a></p>
+    <p><a href="/chart">Charts</a></p>
+
+    <h2>Sent Awards</h2>
 
     <div class="panel panel-default">
       <div class="panel-body">
@@ -43,7 +48,7 @@
           </select>
           </div>
           <button type="submit" name="submit" value="submit" class="btn btn-primary">Filter</button>
-          <button type="submit" name="submit" value="csv" class="btn">Download as CSV</button>
+          <button type="submit" name="submit" value="csv" class="btn btn-default">Download as CSV</button>
         </form>
       </div>
     </div>
@@ -74,7 +79,12 @@
               <td>{{this.email}}</td>
               <td>{{moment this.granted input="X" format="MM/DD/YYYY h:mm A"}}</td>
               <td><a href="/award-preview?sender={{this.sender}}&signature={{this.signature}}&name={{this.recipient}}&awardtype={{this.class}}&date={{this.granted}}" type="button" class="btn btn-default">View</button></td>
-              <td><button type="button" class="btn btn-danger">Delete</button></td>
+              <td>
+                <form action="/deleteaward" method="post" style="margin: 0px;">
+                  <input type="hidden" name="id" value="{{this.id}}">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
             </tr>
           {{/each}}
         </tbody>

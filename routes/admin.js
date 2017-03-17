@@ -174,6 +174,7 @@ exports.retrieveuserlist = function(req, res, next) {
       resp[i].id = row.id;
       resp[i].username = row.username;
       resp[i].name = row.name;
+      resp[i].isadmin = row.is_admin;
       i = i + 1;
     })
 

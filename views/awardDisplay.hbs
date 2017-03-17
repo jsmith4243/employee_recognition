@@ -20,7 +20,6 @@
   <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
 
   <script type="text/javascript">
-
     function validateForm() {
       var okay = $("#name").val().trim().length && $("#email").val().trim().length && moment($("#date").val()).isValid();
       $('#sendawardbutton').prop("disabled", !okay);
@@ -31,85 +30,10 @@
       $('#datetimepicker1').datetimepicker();
     });
 
-
     $(document).ready(function()
     {
       $("#date").val(moment().format("MM/DD/YYYY h:mm A"));
       validateForm();
-
-      //sendemail
-      // $('#sendawardbutton').click(function() {
-
-      //   console.log("sendawardbutton clicked");
-
-      //   var name = $("#name").val();
-
-      //   var email = $("#email").val();
-
-      //   var awardtype = $("#awardtype").val(); //DOESNT WORK <<<<
-
-      //   var date = $("#date").val(); //DOESNT WORK <<<<
-
-      //   console.log("name is: " + name);
-
-      //   console.log("email is: " + email);
-
-      //   console.log("awardtype is: " + awardtype);
-
-      //   console.log("date is: " + date);
-
-      //   var httpRequest = new XMLHttpRequest();
-      
-      //   if (!httpRequest) 
-      //   {
-      //     alert('Giving up : Cannot create an XMLHTTP instance');
-      //     return false;
-      //   }
-      
-      //   httpRequest.open('POST', '/sendemail', true);
-
-      //   httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-      //   httpRequest.send("name="+name+"&email="+email+"&awardtype="+awardtype+"&date="+date);
-
-
-      // }); 
-
-
-
-      // $('#sendawardbutton').click(function() {
-
-      //   console.log("sendawardbutton clicked for database");
-
-      //   var name = encodeURIComponent($("#name").val());
-      //   var email = encodeURIComponent($("#email").val());
-      //   var awardtype = encodeURIComponent($("#awardtype").val());
-      //   var date = moment($("#date").val()).format("X");
-
-      //   console.log("name is: " + name);
-
-      //   console.log("email is: " + email);
-
-      //   console.log("awardtype is: " + awardtype);
-
-      //   console.log("date is: " + date);
-
-      //   var httpRequest = new XMLHttpRequest();
-      
-      //   if (!httpRequest) 
-      //   {
-      //     alert('Giving up : Cannot create an XMLHTTP instance');
-      //     return false;
-      //   }
-      
-      //   httpRequest.open('POST', '/addaward', true);
-
-      //   httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-      //   httpRequest.send("name="+name+"&email="+email+"&awardtype="+awardtype+"&date="+date);
-
-
-      // }); 
 
       $('#previewawardbutton').click(function() {
         var name = encodeURIComponent($("#name").val());
@@ -120,121 +44,15 @@
       })
 
       var httpRequest = new XMLHttpRequest();
-      
       if (!httpRequest) 
       {
           alert('Giving up : Cannot create an XMLHTTP instance');
           return false;
       }
-      
-      // httpRequest.onreadystatechange = function(){
-      
-      //   if (httpRequest.readyState === XMLHttpRequest.DONE) 
-      //   {
-
-      //     if (httpRequest.status === 200) 
-      //     {
-          
-      //       //alert(httpRequest.responseText); //if its json you call JSON parse to get a json object which is same as javascript object
-      //       var arr = JSON.parse(httpRequest.responseText);
-            
-      //       $("#awardtable").empty();  //POINTERX
-           
-      //       //var examplefirstname = "examplefirstname";
-      //       //var examplelastname = "examplelastname";
-           
-           
-      //       for(i = 0; i < arr.length; i++)
-      //       {
-      //         $("#awardtable").append("<tr>" + "<th scope=row>" + arr[i].class + "</th>" +  "<td>" + arr[i].recipient + "</td>" + "<td>" + arr[i].email + "</td>" + "<td>" + arr[i].granted + "</td>" + "<td><button type=\"button\" class=\"btn btn-default tabledeletebutton\" userid=\"" + arr[i].id + "\"  id=\"tabledeletebutton\" >Delete</button></td>" +  "</tr>");
-      //       }
-           
-      //       $(".tabledeletebutton").click(function() {
-
-      //         console.log("tabledeletebutton clicked");
-             
-      //         var id;
-             
-      //         id = $(this).attr("userid");
-             
-      //         console.log("userid is: " + id);
-             
-             
-             
-      //         var httpRequest = new XMLHttpRequest();
-      
-      //         if (!httpRequest) 
-      //         {
-      //           alert('Giving up : Cannot create an XMLHTTP instance');
-      //           return false;
-      //         }
-      
-      //         httpRequest.open('POST', '/deleteaward', true);
-
-      //         httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-      //         httpRequest.send("awardid="+id);
-
-   
-    
-
-      //       });
-           
-
-           
-
-            
-      //      //$("#usertable").append("<th scope=row>" + arr[i].id + "</th>" +  "<td>" + arr[i].username+ "</td>");
-            
-      //      /* 
-      //                 <th scope="row">1</th>
-      //     <td>Mark</td>
-      //     <td>Otto</td>
-      //     <td>@mdo</td>
-      //     <td>button</td>
-      //     <td>button</td>
-      //     */
-            
-      //       console.log(">>>" + arr[0].username);
-            
-      //     } 
-      
-      //     else 
-      
-      
-      //     {
-      
-      //       alert('There was a problem with the request.');
-       
-      //     }
-          
-      //   }
-        
-      // }
-
-
-      
       httpRequest.open('POST', '/retrieveawardlist', true);
-      
       httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      
       httpRequest.send();
-      
-      
-
     });
-
-
-
-
-
-
-
-    //}); //.ready()
-
-    
-
-
   </script>
   </head>
 

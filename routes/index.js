@@ -56,8 +56,7 @@ router.post('/register', upload.single('signature'), user.register);
 router.get('/mysignature', user.mysignature);
 router.get('/resetpassword', user.passwordresetget);
 router.post('/resetpassword', user.passwordresetpost);
-router.post('/edituserFromSettings', user.edituserFromSettings);
-router.post('/retrieveuserlistFromSettings', user.retrieveuserlistFromSettings);
+router.post('/userSettings', isUser, upload.single('signature'), user.updatesettings);
 
 router.get('/test-download', award.test);
 router.get('/award-preview', award.preview);

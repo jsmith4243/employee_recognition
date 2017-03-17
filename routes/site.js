@@ -26,7 +26,6 @@ exports.administration = function(req, res) {
   res.render('administration', { title: 'Administration' });
 };
 
-exports.userSettings = function(req, res) 
-{
-  res.render('settings', { title: 'Settings' });
+exports.userSettings = function(req, res) {
+  res.render('settings', { title: 'Settings', username: req.user.username, name: req.user.name, signature: req.user.signature });
 };

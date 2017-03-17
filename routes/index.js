@@ -52,7 +52,8 @@ router.post('/admin-login', passport.authenticate('admin-local', { successRedire
 
 router.get('/logout', user.logout);
 router.post('/register', upload.single('signature'), user.register);
-router.get('/mysignature', user.mysignature);
+router.get('/mysignature', isUser, user.mysignature);
+router.get('/getsignature', isAdmin, user.getsignature);
 router.get('/resetpassword', user.passwordresetget);
 router.post('/resetpassword', user.passwordresetpost);
 router.post('/userSettings', isUser, upload.single('signature'), user.updatesettings);

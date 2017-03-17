@@ -199,14 +199,14 @@ exports.deleteadmin = function(req, res, next) {
 exports.edituserget = function(req, res) {
   var id = req.query.id;
 
-  db.get('SELECT id, username, name, signature, division, department FROM users WHERE id = ?', id, function(err, row) {
+  db.get('SELECT id, username, name, signature, mimetype, division, department FROM users WHERE id = ?', id, function(err, row) {
     if (!row) {
       // error
     }
     else {
       db.all('SELECT id, name, id IS ? AS selected FROM departments', row.department ? row.department : 0, function(err, departments) {
         db.all('SELECT id, name, id IS ? AS selected FROM divisions', row.division ? row.division : 0, function(err, divisions) {
-          res.render('edituser', { title: 'Edit User', username: row.username, name: row.name, signature: row.signature, divisions: divisions, departments: departments });
+          res.render('edituser', { title: 'Edit User', username: row.username, name: row.name, signature: row.signature, mimetype: row.mimetype, divisions: divisions, departments: departments });
         });
       });
     }

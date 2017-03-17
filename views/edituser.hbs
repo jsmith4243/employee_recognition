@@ -19,7 +19,7 @@
    
     <div class="btn-group" role="group" aria-label="...">
       <a href="/logout"><button type="button" class="btn btn-default">Log Out</button></a>
-      <a href="/"><button type="button" class="btn btn-default">Back</button></a>
+      <a href="/administration?show=users"><button type="button" class="btn btn-default">Back</button></a>
     </div>
     
     <h2>Edit Account:</h2>
@@ -64,7 +64,7 @@
       <div class="form-group">
         <label class="control-label col-sm-3" for="signature">Signature:</label>
         <div class="col-sm-9">
-          <p><img src="/mysignature"></p>
+          <p><img src="/getsignature?signature={{signature}}&mimetype={{mimetype}}"></p>
           <input type="file" id="signature" name="signature">
         </div>
       </div>

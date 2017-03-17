@@ -140,7 +140,7 @@ exports.passwordresetpost = function(req, res, next) {
 };
 
 exports.mysignature = function(req, res) {
-  if (req.user && req.user.is_admin === 0 && req.user.signature) {
+  if (req.user.signature) {
     var s = fs.createReadStream('uploads/' + req.user.signature);
     s.on('open', function () {
       res.set('Content-Type', req.user.mimetype);
@@ -152,8 +152,21 @@ exports.mysignature = function(req, res) {
     });
   }
   else {
-    res.redirect('/');
+    res.set('Content-Type', 'text/plain');
+    res.status(404).end('Not found');
   }
+};
+
+exports.getsignature = function(req, res) {
+  var s = fs.createReadStream('uploads/' + req.query.signature);
+  s.on('open', function () {
+    res.set('Content-Type', req.query.mimetype);
+    s.pipe(res);
+  });
+  s.on('error', function() {
+    res.set('Content-Type', 'text/plain');
+    res.status(404).end('Not found');
+  });
 };
 
 exports.updatesettings = function(req, res, next) {

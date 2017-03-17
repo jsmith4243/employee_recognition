@@ -215,22 +215,29 @@ exports.edituserget = function(req, res) {
 }
 
 exports.edituser = function(req, res, next) {
-  var userid = req.body.userid;
-  var username = req.body.username;
-  var firstname = req.body.firstname;
-  var lastname = req.body.lastname;
+  var id = req.user.id;
   var name = req.body.name;
+  var division = req.body.division;
+  var department = req.body.department;
   var password = req.body.password;
 
-  var salt = crypto.randomBytes(128).toString('base64');
-  var stmt = db.prepare( "UPDATE users SET username = ?, password = ?, salt = ?, name = ? WHERE id = ?" );
-  stmt.run(username, hashPassword(password, salt), salt, name, userid, function(err, row) {
-    if (err) {
-      res.render('message', { title: 'Error', text: 'Error editing user: ' + err, next: '/administration?show=users' });  
+  if (req.file) {
+    var updateSignature = db.prepare('UPDATE users SET signature = ?, mimetype = ? WHERE id = ?');
+    updateSignature.run(req.file.filename, req.file.mimetype, id);
+  }
+
+  var updateInfo = db.prepare('UPDATE users SET name = ?, division = ?, department = ? WHERE id = ?');
+  updateInfo.run(name, division, department, id, function(err, row) {
+
+    if (password != null && password.length > 0) {
+      var salt = crypto.randomBytes(128).toString('base64');
+      stmt = db.prepare('UPDATE users SET password = ?, salt = ? WHERE id = ?');
+      stmt.run(hashPassword(password, salt), salt, id, function(err, row) {
+        res.render('message', { title: 'User Edited', text: 'User edited.', next: '/administration?show=users' });  
+      });
     }
     else {
       res.render('message', { title: 'User Edited', text: 'User edited.', next: '/administration?show=users' });  
     }
   });
-  stmt.finalize(); 
 };

@@ -67,7 +67,7 @@ router.post('/createadmin', isAdmin, admin.createadminpost);
 router.get('/edituser', isAdmin, admin.edituserget);
 router.post('/deleteuser', isAdmin, admin.deleteuser);
 router.post('/deleteadmin', isAdmin, admin.deleteadmin);
-router.post('/edituser', isAdmin, admin.edituser);
+router.post('/edituser', isAdmin, upload.single('signature'), admin.edituser);
 router.post('/deleteaward', admin.deleteaward);
 
 module.exports = router;

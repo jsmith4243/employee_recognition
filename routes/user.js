@@ -35,7 +35,7 @@ exports.register = function(req, res, next) {
     }
     else {
       if (req.isAuthenticated() && req.user.is_admin === 1) {
-        res.redirect('/administration');
+        res.render('message', { title: 'User Created', text: 'User created.', next: '/administration?show=users' });  
       }
       else {
         res.render('message', { title: 'User Registered', text: 'You have successfully registered. You may now log in.', next: '/' });  

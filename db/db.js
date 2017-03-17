@@ -110,7 +110,7 @@ function insertUsers() {
                {id: 26, username: "z@example.com", name: "Zelda Zhou", division: 4, department: 4}
     ];
     users.forEach(function (user) {
-        db.run("INSERT OR IGNORE INTO users(id, username, name, division, department, password, salt, signature, mimetype) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        db.run("INSERT OR IGNORE INTO users(id, username, name, division, department, is_admin, password, salt, signature, mimetype) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?)",
             user.id, user.username, user.name, user.division, user.department, "", "", "placeholder2.png", "image/png", function () {
             i++;
             if (i === users.length) {

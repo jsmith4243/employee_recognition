@@ -28,10 +28,10 @@ exports.createadminpost = function(req, res) {
   var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin) VALUES (?, ?, ?, 1)" );
   stmt.run(username, hashPassword(password, salt), salt, function(err, row) {
     if (err) {
-      res.render('message', { title: 'Error', text: 'Error registering user: ' + err, next: '/administration' });  
+      res.render('message', { title: 'Error', text: 'Error registering admin: ' + err, next: '/administration' });  
     }
     else {
-      res.redirect('/administration');
+        res.render('message', { title: 'Admin Created', text: 'Admin created.', next: '/administration?show=admins' });  
     }
   });
 
@@ -68,11 +68,12 @@ exports.reports = function(req, res) {
 
 
       if (show === 'users') {
-        var query = 'SELECT u.name AS name, u.id AS id, username AS email, dv.name AS division, dp.name AS department, COUNT(e.id) AS count FROM entries e LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' GROUP BY u.id';
+        var query = 'WITH x AS (SELECT u.name AS name, u.id AS id, username AS email, dv.name AS division, dp.name AS department, COUNT(e.id) AS count FROM entries e LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id WHERE is_admin = 0 GROUP BY u.id ), y AS (SELECT u.name AS name, u.id AS id, username AS email, dv.name AS division, dp.name AS department, 0 AS count FROM users u LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id WHERE is_admin = 0 AND u.id NOT IN (SELECT id FROM x)) SELECT * FROM x UNION ALL SELECT * FROM y' + filter + ' ORDER BY id';
 
         db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
           db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
             db.all(query, ...params, function(err, users) {
+              console.log(err);
               if (req.query['submit'] === 'csv') {
                 res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
                 res.setHeader('Content-Type', 'text/csv');

@@ -31,14 +31,14 @@ exports.register = function(req, res, next) {
   var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype, division, department) VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?)" );
   stmt.run(username, hashPassword(password, salt), salt, Math.floor(Date.now() / 1000), req.body.name, filename, mimetype, division, department, function(err, row) {
     if (err) {
-      res.send("Error registering user" + err);  
+      res.render('message', { title: 'Error', text: 'Error registering user: ' + err, next: '/' });  
     }
     else {
       if (req.isAuthenticated() && req.user.is_admin === 1) {
         res.redirect('/administration');
       }
       else {
-        res.send("User Registered");  
+        res.render('message', { title: 'User Registered', text: 'You have successfully registered. You may now log in.', next: '/' });  
       }
     }
   });
@@ -58,15 +58,15 @@ exports.passwordresetget = function(req, res) {
   else {
     db.get('SELECT id, salt, resethash, resetdate FROM users WHERE username = ? AND is_admin = ?', email, is_admin, function(err, user) {
       if (err) {
-        res.send("Database error, please try again later.");  
+        res.render('message', { title: 'Error', text: 'Database error, please try again later.', next: '/resetpassword' });  
       }
       else if (typeof user === 'undefined') {
-        res.send("Invalid or expired password reset link.");  
+        res.render('message', { title: 'Error', text: 'Invalid or expired password reset link.', next: '/resetpassword' });  
       }
       else {
         var timeDiff = Math.floor(Date.now()) - user['resetdate'];
         if (user['resetdate'] === null || timeDiff > 1000*60*60*24) {
-          res.send("Invalid or expired password reset link.");  
+          res.render('message', { title: 'Error', text: 'Invalid or expired password reset link.', next: '/resetpassword' });  
         }
         else {
           var hash = hashPassword(id, user['salt']);
@@ -74,7 +74,7 @@ exports.passwordresetget = function(req, res) {
             res.render('resetpassword', { title: 'Reset Password', username: email, is_admin: is_admin, id: id });
           }
           else {
-            res.send("Invalid or expired password reset link.");  
+            res.render('message', { title: 'Error', text: 'Invalid or expired password reset link.', next: '/resetpassword' });  
           }
         }
       }
@@ -90,10 +90,10 @@ exports.passwordresetpost = function(req, res, next) {
   db.get('SELECT id, salt, resethash, resetdate FROM users WHERE username = ? AND is_admin = ?', username, is_admin, function(err, user) {
     if (typeof user === 'undefined') {
       if (action == 'request') {
-        res.send("An email containing a password reset link has been sent to the submitted email address if it matched a user in our records.");  
+        res.render('message', { title: 'Password Reset Requested', text: 'An email containing a password reset link has been sent to the submitted email address if it matched a user in our records.', next: '/' });  
       }
       else {
-        res.send("Invalid or expired password reset link.");  
+        res.render('message', { title: 'Error', text: 'Invalid or expired password reset link.', next: '/resetpassword' });  
       }
     }
     else {
@@ -111,13 +111,13 @@ exports.passwordresetpost = function(req, res, next) {
               html: '<p>A password reset request was requested for your account. You may reset your password by following this link: <a href="' + link +  '">' + link + '</a></p><p>If you did not request this, you may ignore this email.</p>'
             };
             transporter.sendMail(mailOptions);
-            res.send("An email containing a password reset link has been sent to the submitted email address if it matched a user in our records.");  
+            res.render('message', { title: 'Password Reset Requested', text: 'An email containing a password reset link has been sent to the submitted email address if it matched a user in our records.', next: '/' });  
           });
           break;          
         case 'reset':
           timeDiff = Math.floor(Date.now()) - user['resetdate'];
           if (user['resetdate'] === null || timeDiff > 1000*60*60*24) {
-            res.send("Invalid or expired password reset link.");  
+            res.render('message', { title: 'Error', text: 'Invalid or expired password reset link.', next: '/resetpassword' });  
           }
           else {
             var hash = hashPassword(req.body.id, user['salt']);
@@ -126,13 +126,13 @@ exports.passwordresetpost = function(req, res, next) {
               var salt = crypto.randomBytes(128).toString('base64');
               stmt = db.prepare('UPDATE users SET password = ?, salt = ?, resethash = NULL, resetdate = NULL WHERE id = ?');
               stmt.run(hashPassword(password, salt), salt, user['id'], function(err, row) {
-                res.send("Password reset.");  
+                res.render('message', { title: 'Password Reset', text: 'Password successfully reset. You may now log in.', next: is_admin ? '/administration' : '/' });  
               });
             }
           }
           break;
         default:
-          res.send("Invalid or expired password reset link.");  
+          res.render('message', { title: 'Error', text: 'Invalid or expired password reset link.', next: '/resetpassword' });  
           break;
       }
     }
@@ -179,16 +179,16 @@ exports.updatesettings = function(req, res, next) {
           var salt = crypto.randomBytes(128).toString('base64');
           stmt = db.prepare('UPDATE users SET password = ?, salt = ? WHERE id = ?');
           stmt.run(hashPassword(newpassword, salt), salt, id, function(err, row) {
-            res.send("Settings updated.");  
+            res.render('message', { title: 'Settings Updated', text: 'Settings updated.', next: '/userSettings' });  
           });
         }
         else {
-          res.send("Current password incorrect.")
+          res.render('message', { title: 'Error', text: 'Current password incorrect.', next: '/userSettings' });  
         }
       });
     }
     else {
-      res.send("Settings updated.");
+      res.render('message', { title: 'Settings Updated', text: 'Settings updated.', next: '/userSettings' });  
     }
   });
 };

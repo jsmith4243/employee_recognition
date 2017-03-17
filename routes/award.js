@@ -49,7 +49,7 @@ exports.send = function(req, res, next) {
             db.run("INSERT INTO entries (class, recipient, email, user, granted) VALUES (?, ?, ?, ?, ?)",
                 awardtype, name, req.body.email, req.user.id, date, function(err, row) {
               if (err) {
-                res.send("Error sending award " + err);  
+                res.render('message', { title: 'Error', text: 'Error sending award: ' + err, next: '/' });  
               }
               else {
                 res.redirect('/');

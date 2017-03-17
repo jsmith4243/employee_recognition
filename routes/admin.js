@@ -28,7 +28,7 @@ exports.createadminpost = function(req, res) {
   var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin) VALUES (?, ?, ?, 1)" );
   stmt.run(username, hashPassword(password, salt), salt, function(err, row) {
     if (err) {
-      res.send("Error registering user" + err);  
+      res.render('message', { title: 'Error', text: 'Error registering user: ' + err, next: '/administration' });  
     }
     else {
       res.redirect('/administration');
@@ -143,10 +143,10 @@ exports.deleteaward = function(req, res, next) {
     var stmt = db.prepare(query);
     stmt.run(...params, function(err, row) {
       if (err) {
-        res.send("Error deleting award" + err);  
+        res.render('message', { title: 'Error', text: 'Error deleting award: ' + err, next: '/' });  
       }
       else {
-        res.send("Award deleted");  
+        res.render('message', { title: 'Award deleted', text: 'Award deleted.', next: '/' });  
       }
     });
   }
@@ -161,16 +161,16 @@ exports.deleteuser = function(req, res, next) {
   var delEntries = db.prepare('DELETE FROM entries WHERE user = ?');
   delEntries.run(userid, function(err, row) {
     if (err) {
-      res.send("Error deleting user" + err);  
+      res.render('message', { title: 'Error', text: 'Error deleting user: ' + err, next: '/administration?show=users' });  
     }
     else {
       var delUser = db.prepare( "DELETE FROM users WHERE id = ?" );
       delUser.run(userid, function(err, row) {
         if (err) {
-          res.send("Error deleting user" + err);  
+          res.render('message', { title: 'Error', text: 'Error deleting user: ' + err, next: '/administration?show=users' });  
         }
         else {
-          res.send("User deleted");  
+          res.render('message', { title: 'User deleted', text: 'User deleted.', next: '/administration?show=users' });  
         }
       });
     }
@@ -181,16 +181,16 @@ exports.deleteadmin = function(req, res, next) {
   var userid = req.body.userid;
 
   if (userid == req.user.id) {
-    res.send("Cannot delete own account.");
+    res.render('message', { title: 'Error', text: 'Cannot delete own account.', next: '/administration?show=admins' });  
   }
   else {
     var delUser = db.prepare( "DELETE FROM users WHERE id = ?" );
     delUser.run(userid, function(err, row) {
       if (err) {
-        res.send("Error deleting user" + err);  
+        res.render('message', { title: 'Error', text: 'Error deleting admin: ' + err, next: '/administration?show=admins' });  
       }
       else {
-        res.send("User deleted");  
+        res.render('message', { title: 'Admin deleted', text: 'Admin deleted.', next: '/administration?show=admins' });  
       }
     });
   }
@@ -226,10 +226,10 @@ exports.edituser = function(req, res, next) {
   var stmt = db.prepare( "UPDATE users SET username = ?, password = ?, salt = ?, name = ? WHERE id = ?" );
   stmt.run(username, hashPassword(password, salt), salt, name, userid, function(err, row) {
     if (err) {
-      res.send("Error editing user" + err);
+      res.render('message', { title: 'Error', text: 'Error editing user: ' + err, next: '/administration?show=users' });  
     }
     else {
-      res.send("User edited");
+      res.render('message', { title: 'User Edited', text: 'User edited.', next: '/administration?show=users' });  
     }
   });
   stmt.finalize(); 

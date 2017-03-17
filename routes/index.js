@@ -25,19 +25,28 @@ var user = require('./user');
 var admin = require('./admin');
 var chart = require('./chart');
 
+var isUser = function(req, res, next) {
+  if (req.isAuthenticated() && req.user.is_admin === 0) {
+    next();
+  }
+  else {
+    res.redirect('/');
+  }
+};
+
 var isAdmin = function(req, res, next) {
   if (req.isAuthenticated() && req.user.is_admin === 1) {
     next();
   }
   else {
-    res.render('adminLogin', { title: 'Administration Login' });
+    res.render('/admin-login');
   }
 };
 
 router.get('/', site.index);
 router.get('/userRegistration', site.registration);
 router.get('/administration', isAdmin, site.administration);
-router.get('/userSettings', site.userSettings);
+router.get('/userSettings', isUser, site.userSettings);
 
 router.post('/login', passport.authenticate('user-local', { successRedirect: '/' }));
 router.post('/admin-login', passport.authenticate('admin-local', { successRedirect: '/administration' }));

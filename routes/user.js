@@ -30,7 +30,7 @@ exports.register = function(req, res, next) {
     isadmin = 0;
   }
 
-  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, ?, ?, ?, ?, ?)" );
+  var stmt = db.prepare( "INSERT INTO users (username, password, salt, is_admin, created, name, signature, mimetype) VALUES (?, ?, ?, 0, ?, ?, ?, ?)" );
   stmt.run(username, hashPassword(password, salt), salt, isadmin, Math.floor(Date.now() / 1000), req.body.name, req.file.filename, req.file.mimetype, function(err, row) {
     if (err) {
       res.send("Error registering user" + err);  

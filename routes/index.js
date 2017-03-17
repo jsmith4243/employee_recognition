@@ -61,6 +61,7 @@ router.post('/retrieveuserlist', admin.retrieveuserlist);
 router.post('/addaward', admin.addaward);
 router.post('/deleteaward', admin.deleteaward);
 router.post('/retrieveawardlist', admin.retrieveawardlist);
+router.post('/registerfromadministration', admin.registerfromadministration);
 
 router.get('/chart', chart.chart);
 router.post('/getuserawardcount', chart.getuserawardcount);

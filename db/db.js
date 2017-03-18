@@ -62,21 +62,21 @@ function insertDepartments() {
 function insertUser1() {
     var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin, name, signature, mimetype) VALUES(-1, ?, ?, ?, 0, ?, ?, ?)");
     var salt = crypto.randomBytes(128).toString('base64');
-    stmt.run("user@example.com", hashPassword("password", salt), salt, "Example User", "placeholder2.png", "image/png");
+    stmt.run("user@example.com", hashPassword("GeminiTeam2017", salt), salt, "Example User", "placeholder2.png", "image/png");
     stmt.finalize(insertUser2);
 }
 
 function insertUser2() {
     var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin) VALUES(-2, ?, ?, ?, 1)");
     var salt = crypto.randomBytes(128).toString('base64');
-    stmt.run("admin@example.com", hashPassword("password", salt), salt);
+    stmt.run("admin@example.com", hashPassword("GeminiTeam2017", salt), salt);
     stmt.finalize(insertUser3);
 }
 
 function insertUser3() {
     var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin) VALUES(-3, ?, ?, ?, 1)");
     var salt = crypto.randomBytes(128).toString('base64');
-    stmt.run("admin2@example.com", hashPassword("password", salt), salt);
+    stmt.run("admin2@example.com", hashPassword("GeminiTeam2017", salt), salt);
     stmt.finalize(insertUsers);
 }
 

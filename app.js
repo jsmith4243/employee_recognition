@@ -39,9 +39,7 @@ passport.use('user-local', new LocalStrategy(
   function(username, password, done) {
     db.get('SELECT salt FROM users WHERE username = ? AND is_admin = 0', username, function(err, row) {
       if (!row) return done(null, false);
-      console.log("salt: " + row.salt);
       var hash = hashPassword(password, row.salt);
-      console.log("hash: " + hash);
       db.get('SELECT username, id FROM users WHERE username = ? AND is_admin = 0 AND password = ?', username, hash, function(err, row) {
         if (!row) return done(null, false);
         return done(null, row);
@@ -53,9 +51,7 @@ passport.use('admin-local', new LocalStrategy(
   function(username, password, done) {
     db.get('SELECT salt FROM users WHERE username = ? AND is_admin = 1', username, function(err, row) {
       if (!row) return done(null, false);
-      console.log("salt: " + row.salt);
       var hash = hashPassword(password, row.salt);
-      console.log("hash: " + hash);
       db.get('SELECT username, id FROM users WHERE username = ? AND is_admin = 1 AND password = ?', username, hash, function(err, row) {
         if (!row) return done(null, false);
         return done(null, row);

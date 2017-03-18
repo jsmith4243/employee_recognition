@@ -21,7 +21,6 @@ exports.send = function(req, res, next) {
         var tempfile = fs.createWriteStream(temppath);
 
         tempfile.on('finish', function () {
-          console.log(awardfile);
           var mailOptions = {
             from: '"Gemini Company Awards" <recognitionprog@gmail.com>',
             to: '"' + req.body.name + '" <' + req.body.email + '>',
@@ -40,11 +39,8 @@ exports.send = function(req, res, next) {
           transporter.sendMail(mailOptions, function(error, info){
             fs.unlink(temppath);
             if(error){
-                return console.log(error);
+              res.render('message', { title: 'Error', text: 'Error sending award: ' + error, next: '/' });  
             }
-
-            console.log('Message sent: ' + info.response);
-
 
             db.run("INSERT INTO entries (class, recipient, email, user, granted) VALUES (?, ?, ?, ?, ?)",
                 awardtype, name, req.body.email, req.user.id, date, function(err, row) {

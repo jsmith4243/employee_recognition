@@ -13,7 +13,6 @@ var award = {
     },
 
     generate: function(name, awardtype, date, sender, signature) {
-        console.log('graphic: ' + path.posix.resolve('uploads/' + signature));
         return latex([
             ' \\documentclass[12pt,letter]{article}\\usepackage[landscape,margin=1in]{geometry}\\usepackage{lmodern}\\usepackage{graphicx}\\begin{document}\\begin{center}\\pagenumbering{gobble}{',
             ' {\\fontsize{28pt}{48pt}\\selectfont',

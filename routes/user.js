@@ -177,7 +177,6 @@ exports.updatesettings = function(req, res, next) {
   var currentpassword = req.body.currentpassword;
   var newpassword = req.body.newpassword;
 
-  console.log(req.file);
   if (req.file) {
     var updateSignature = db.prepare('UPDATE users SET signature = ?, mimetype = ? WHERE id = ?');
     updateSignature.run(req.file.filename, req.file.mimetype, id);
@@ -196,7 +195,7 @@ exports.updatesettings = function(req, res, next) {
           });
         }
         else {
-          res.render('message', { title: 'Error', text: 'Current password incorrect.', next: '/userSettings' });  
+          res.render('message', { title: 'Error', text: 'Current password incorrect.', next: '/userSettings' });
         }
       });
     }

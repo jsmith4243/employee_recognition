@@ -73,7 +73,6 @@ exports.reports = function(req, res) {
         db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
           db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
             db.all(query, ...params, function(err, users) {
-              console.log(err);
               if (req.query['submit'] === 'csv') {
                 res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
                 res.setHeader('Content-Type', 'text/csv');
@@ -102,9 +101,7 @@ exports.reports = function(req, res) {
                 if (selectedchart >= 1 && selectedchart <= 3) {
                   chartoptions[selectedchart].selected = true;
                   var chartquery = 'SELECT u.name AS sender, count(entries.id) AS count, c.name AS type, dv.name AS division, dp.name AS department FROM entries LEFT JOIN classes c ON class = c.id LEFT JOIN users u ON user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id' + filter + ' GROUP BY ' + chartoptions[selectedchart].groupby;
-                  console.log(chartquery);
                   db.all(chartquery, ...params, function(err, counts) {
-                    console.log(err);
                     var formattedcounts = counts.map(function (row) {
                       return { category: row[chartoptions[selectedchart].groupby], count: row.count };
                     });
@@ -140,7 +137,6 @@ exports.deleteaward = function(req, res, next) {
       query = "DELETE FROM entries WHERE id = ? AND user = ?";
       params.push(req.user.id);
     }
-    console.log(params);
     var stmt = db.prepare(query);
     stmt.run(...params, function(err, row) {
       if (err) {

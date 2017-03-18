@@ -203,7 +203,7 @@ exports.edituserget = function(req, res) {
     else {
       db.all('SELECT id, name, id IS ? AS selected FROM departments', row.department ? row.department : 0, function(err, departments) {
         db.all('SELECT id, name, id IS ? AS selected FROM divisions', row.division ? row.division : 0, function(err, divisions) {
-          res.render('edituser', { title: 'Edit User', username: row.username, name: row.name, signature: row.signature, mimetype: row.mimetype, divisions: divisions, departments: departments });
+          res.render('edituser', { title: 'Edit User', id: row.id, username: row.username, name: row.name, signature: row.signature, mimetype: row.mimetype, divisions: divisions, departments: departments });
         });
       });
     }

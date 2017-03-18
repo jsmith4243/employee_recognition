@@ -212,7 +212,7 @@ exports.edituserget = function(req, res) {
 }
 
 exports.edituser = function(req, res, next) {
-  var id = req.user.id;
+  var id = req.body.id;
   var name = req.body.name;
   var division = req.body.division;
   var department = req.body.department;

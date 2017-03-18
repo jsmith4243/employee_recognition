@@ -197,7 +197,7 @@ exports.edituserget = function(req, res) {
 
   db.get('SELECT id, username, name, signature, mimetype, division, department FROM users WHERE id = ?', id, function(err, row) {
     if (!row) {
-      // error
+      res.render('message', { title: 'Error', text: 'Error editing user: ' + err, next: '/administration?show=users' });  
     }
     else {
       db.all('SELECT id, name, id IS ? AS selected FROM departments', row.department ? row.department : 0, function(err, departments) {
@@ -236,4 +236,34 @@ exports.edituser = function(req, res, next) {
       res.render('message', { title: 'User Edited', text: 'User edited.', next: '/administration?show=users' });  
     }
   });
+};
+
+exports.editadminget = function(req, res) {
+  var id = req.query.id;
+
+  db.get('SELECT id, username FROM users WHERE id = ?', id, function(err, row) {
+    if (!row) {
+      res.render('message', { title: 'Error', text: 'Error editing admin: ' + err, next: '/administration?show=admins' });  
+    }
+    else {
+      res.render('editadmin', { title: 'Edit Admin', id: row.id, username: row.username });
+    }
+  });
+
+}
+
+exports.editadmin = function(req, res, next) {
+  var id = req.body.id;
+  var password = req.body.newpassword;
+
+  if (password != null && password.length > 0) {
+    var salt = crypto.randomBytes(128).toString('base64');
+    stmt = db.prepare('UPDATE users SET password = ?, salt = ? WHERE id = ?');
+    stmt.run(hashPassword(password, salt), salt, id, function(err, row) {
+      res.render('message', { title: 'Admin Edited', text: 'Admin edited.', next: '/administration?show=admins' });  
+    });
+  }
+  else {
+    res.render('message', { title: 'Admin Edited', text: 'Admin edited.', next: '/administration?show=admins' });  
+  }
 };

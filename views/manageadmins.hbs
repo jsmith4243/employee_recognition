@@ -31,6 +31,7 @@
         <thead>
           <tr>
             <th>Email</th>
+            <th>Edit</th>
             <th>Delete</th>
           </tr>
         </thead>
@@ -38,6 +39,7 @@
           {{#each admins}}
             <tr>
               <td>{{this.username}}</td>
+              <td><a href="/editadmin?id={{this.id}}" type="button" class="btn btn-default">Edit</button></td>
               <td>
                 <form action="/deleteadmin" method="post" style="margin: 0px;">
                   <input type="hidden" name="userid" value="{{this.id}}">

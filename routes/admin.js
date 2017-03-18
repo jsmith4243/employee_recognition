@@ -68,14 +68,14 @@ exports.reports = function(req, res) {
 
 
       if (show === 'users') {
-        var query = 'WITH x AS (SELECT u.name AS name, u.id AS id, username AS email, dv.id AS dvid, dv.name AS division, dp.id AS dpid, dp.name AS department, COUNT(e.id) AS count FROM entries e LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id WHERE is_admin = 0 GROUP BY u.id ), y AS (SELECT u.name AS name, u.id AS id, username AS email, dv.id AS dvid, dv.name AS division, dp.id AS dpid, dp.name AS department, 0 AS count FROM users u LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id WHERE is_admin = 0 AND u.id NOT IN (SELECT id FROM x)) SELECT * FROM x' + filter.replace(/\./g, '') + ' UNION ALL SELECT * FROM y' + filter.replace(/\./g, '') + ' ORDER BY id';
+        var query = 'WITH x AS (SELECT u.name AS name, u.id AS id, username AS email, dv.id AS dvid, dv.name AS division, dp.id AS dpid, dp.name AS department, created, COUNT(e.id) AS count FROM entries e LEFT JOIN users u ON e.user = u.id LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id WHERE is_admin = 0 GROUP BY u.id ), y AS (SELECT u.name AS name, u.id AS id, username AS email, dv.id AS dvid, dv.name AS division, dp.id AS dpid, dp.name AS department, created, 0 AS count FROM users u LEFT JOIN divisions dv ON u.division = dv.id LEFT JOIN departments dp ON u.department = dp.id WHERE is_admin = 0 AND u.id NOT IN (SELECT id FROM x)) SELECT * FROM x' + filter.replace(/\./g, '') + ' UNION ALL SELECT * FROM y' + filter.replace(/\./g, '') + ' ORDER BY id';
         db.all('SELECT id, name, id IS ? AS selected FROM departments', department ? department : 0, function(err, departments) {
           db.all('SELECT id, name, id IS ? AS selected FROM divisions', division ? division : 0, function(err, divisions) {
             db.all(query, ...params, ...params, function(err, users) {
               if (req.query['submit'] === 'csv') {
                 res.setHeader('Content-Disposition', 'attachment; filename=results.csv');
                 res.setHeader('Content-Type', 'text/csv');
-                res.send(csv.export(users, ['name', 'email', 'division', 'department', 'count'], ['Name', 'Email', 'Division', 'Department', 'Count']));
+                res.send(csv.export(users, ['name', 'email', 'division', 'department', 'count', 'created'], ['Name', 'Email', 'Division', 'Department', 'Count', 'Created']));
               }
               else {
                 res.render('manageusers', { title: 'Administration', users: users, departments: departments, divisions: divisions });

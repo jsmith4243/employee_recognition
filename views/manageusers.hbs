@@ -63,6 +63,7 @@
             <th>Division</th>
             <th>Department</th>
             <th>Awards sent</th>
+            <th>Created</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -75,6 +76,7 @@
               <td>{{this.division}}</td>
               <td>{{this.department}}</td>
               <td>{{this.count}}</td>
+              <td>{{moment this.created input="X" format="MM/DD/YYYY h:mm A"}}</td>
               <td><a href="/edituser?id={{this.id}}" type="button" class="btn btn-default">Edit</button></td>
               <td>
                 <form action="/deleteuser" method="post" style="margin: 0px;">

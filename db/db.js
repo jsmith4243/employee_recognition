@@ -60,9 +60,9 @@ function insertDepartments() {
 
 
 function insertUser1() {
-    var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin, name, signature, mimetype) VALUES(-1, ?, ?, ?, 0, ?, ?, ?)");
+    var stmt = db.prepare("INSERT OR IGNORE INTO users(id, username, password, salt, is_admin, name, signature, mimetype, created) VALUES(-1, ?, ?, ?, 0, ?, ?, ?, ?)");
     var salt = crypto.randomBytes(128).toString('base64');
-    stmt.run("user@example.com", hashPassword("GeminiTeam2017", salt), salt, "Example User", "placeholder2.png", "image/png");
+    stmt.run("user@example.com", hashPassword("GeminiTeam2017", salt), salt, "Example User", "placeholder2.png", "image/png", Math.floor(Date.now() / 1000));
     stmt.finalize(insertUser2);
 }
 
@@ -82,36 +82,36 @@ function insertUser3() {
 
 function insertUsers() {
     var i = 0;
-    users = [ {id: 1, username: "a@example.com", name: "Andy Atkinson", division: 1, department: 1},
-               {id: 2, username: "b@example.com", name: "Beatrix Bancroft", division: 1, department: 1},
-               {id: 3, username: "c@example.com", name: "Carol Campbell", division: 1, department: 2},
-               {id: 4, username: "d@example.com", name: "Diana Durant", division: 1, department: 2},
-               {id: 5, username: "e@example.com", name: "Eugene Eberly", division: 1, department: 3},
-               {id: 6, username: "f@example.com", name: "Fred Fuchs", division: 1, department: 3},
-               {id: 7, username: "g@example.com", name: "Ginny Guo", division: 1, department: 4},
-               {id: 8, username: "h@example.com", name: "Harold Hearst", division: 2, department: 1},
-               {id: 9, username: "i@example.com", name: "Irene Kerr", division: 2, department: 2},
-               {id: 10, username: "j@example.com", name: "Joanna Jiang", division: 2, department: 3},
-               {id: 11, username: "k@example.com", name: "Kathleen Kerr", division: 2, department: 4},
-               {id: 12, username: "l@example.com", name: "Lee LeConte", division: 2, department: 4},
-               {id: 13, username: "m@example.com", name: "Michael Moss", division: 2, department: 4},
-               {id: 14, username: "n@example.com", name: "Nancy Nunez", division: 2, department: 4},
-               {id: 15, username: "o@example.com", name: "Oscar O'Brien", division: 3, department: 1},
-               {id: 16, username: "p@example.com", name: "Pamela Peek", division: 3, department: 1},
-               {id: 17, username: "q@example.com", name: "Quincy Qiu", division: 3, department: 1},
-               {id: 18, username: "r@example.com", name: "Renee Roth", division: 3, department: 2},
-               {id: 19, username: "s@example.com", name: "Steven Simon", division: 3, department: 2},
-               {id: 20, username: "t@example.com", name: "Tasha Tang", division: 3, department: 3},
-               {id: 21, username: "u@example.com", name: "Ursula Ure", division: 3, department: 3},
-               {id: 22, username: "v@example.com", name: "Vincent Vo", division: 3, department: 4},
-               {id: 23, username: "w@example.com", name: "Will Watt", division: 4, department: 1},
-               {id: 24, username: "x@example.com", name: "Xavier Xi", division: 4, department: 2},
-               {id: 25, username: "y@example.com", name: "Yvette Yang", division: 4, department: 3},
-               {id: 26, username: "z@example.com", name: "Zelda Zhou", division: 4, department: 4}
+    users = [ {id: 1, username: "a@example.com", name: "Andy Atkinson", division: 1, department: 1, created: 1486258341},
+               {id: 2, username: "b@example.com", name: "Beatrix Bancroft", division: 1, department: 1, created: 1392538418},
+               {id: 3, username: "c@example.com", name: "Carol Campbell", division: 1, department: 2, created: 1422346105},
+               {id: 4, username: "d@example.com", name: "Diana Durant", division: 1, department: 2, created: 1467332971},
+               {id: 5, username: "e@example.com", name: "Eugene Eberly", division: 1, department: 3, created: 1423324268},
+               {id: 6, username: "f@example.com", name: "Fred Fuchs", division: 1, department: 3, created: 1484736684},
+               {id: 7, username: "g@example.com", name: "Ginny Guo", division: 1, department: 4, created: 1432166031},
+               {id: 8, username: "h@example.com", name: "Harold Hearst", division: 2, department: 1, created: 1474082301},
+               {id: 9, username: "i@example.com", name: "Irene Kerr", division: 2, department: 2, created: 1483525916},
+               {id: 10, username: "j@example.com", name: "Joanna Jiang", division: 2, department: 3, created: 1477207573},
+               {id: 11, username: "k@example.com", name: "Kathleen Kerr", division: 2, department: 4, created: 1426207320},
+               {id: 12, username: "l@example.com", name: "Lee LeConte", division: 2, department: 4, created: 1397288004},
+               {id: 13, username: "m@example.com", name: "Michael Moss", division: 2, department: 4, created: 1456530995},
+               {id: 14, username: "n@example.com", name: "Nancy Nunez", division: 2, department: 4, created: 1446761909},
+               {id: 15, username: "o@example.com", name: "Oscar O'Brien", division: 3, department: 1, created: 1406836552},
+               {id: 16, username: "p@example.com", name: "Pamela Peek", division: 3, department: 1, created: 1456247433},
+               {id: 17, username: "q@example.com", name: "Quincy Qiu", division: 3, department: 1, created: 1446792152},
+               {id: 18, username: "r@example.com", name: "Renee Roth", division: 3, department: 2, created: 1416811446},
+               {id: 19, username: "s@example.com", name: "Steven Simon", division: 3, department: 2, created: 1466207251},
+               {id: 20, username: "t@example.com", name: "Tasha Tang", division: 3, department: 3, created: 1476841900},
+               {id: 21, username: "u@example.com", name: "Ursula Ure", division: 3, department: 3, created: 1396684942},
+               {id: 22, username: "v@example.com", name: "Vincent Vo", division: 3, department: 4, created: 1467619283},
+               {id: 23, username: "w@example.com", name: "Will Watt", division: 4, department: 1, created: 1428029153},
+               {id: 24, username: "x@example.com", name: "Xavier Xi", division: 4, department: 2, created: 1408775327},
+               {id: 25, username: "y@example.com", name: "Yvette Yang", division: 4, department: 3, created: 1439591470},
+               {id: 26, username: "z@example.com", name: "Zelda Zhou", division: 4, department: 4, created: 1409326251}
     ];
     users.forEach(function (user) {
-        db.run("INSERT OR IGNORE INTO users(id, username, name, division, department, is_admin, password, salt, signature, mimetype) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?)",
-            user.id, user.username, user.name, user.division, user.department, "", "", "placeholder2.png", "image/png", function () {
+        db.run("INSERT OR IGNORE INTO users(id, username, name, division, department, is_admin, password, salt, signature, mimetype, created) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?)",
+            user.id, user.username, user.name, user.division, user.department, "", "", "placeholder2.png", "image/png", user.created, function () {
             i++;
             if (i === users.length) {
                 insertClasses();
@@ -157,15 +157,15 @@ function insertEntries2() {
                { id : 5 , class : 5, user : 5,  granted : 1434358163, email : '905@example.com', recipient : 'Ethel' },
                { id : 6 , class : 1, user : 6,  granted : 1451517690, email : '988@example.com', recipient : 'Gary' },
                { id : 7 , class : 2, user : 7,  granted : 1404497986, email : '792@example.com', recipient : 'Hannah' },
-               { id : 8 , class : 3, user : 8,  granted : 1492503263, email : '756@example.com', recipient : 'Ivan' },
-               { id : 9 , class : 4, user : 9,  granted : 1499063017, email : '816@example.com', recipient : 'Joshua' },
+               { id : 8 , class : 3, user : 8,  granted : 1392503263, email : '756@example.com', recipient : 'Ivan' },
+               { id : 9 , class : 4, user : 9,  granted : 1399063017, email : '816@example.com', recipient : 'Joshua' },
                { id : 10, class : 5, user : 10, granted : 1449406295, email : '769@example.com', recipient : 'Kay' },
                { id : 11, class : 1, user : 11, granted : 1479285724, email : '798@example.com', recipient : 'Larry' },
                { id : 12, class : 2, user : 12, granted : 1419152647, email : '326@example.com', recipient : 'Mandy' },
-               { id : 13, class : 3, user : 13, granted : 1495328518, email : '301@example.com', recipient : 'Nick' },
-               { id : 14, class : 4, user : 14, granted : 1491471378, email : '629@example.com', recipient : 'Ophelia' },
+               { id : 13, class : 3, user : 13, granted : 1395328518, email : '301@example.com', recipient : 'Nick' },
+               { id : 14, class : 4, user : 14, granted : 1391471378, email : '629@example.com', recipient : 'Ophelia' },
                { id : 15, class : 5, user : 15, granted : 1486258341, email : '572@example.com', recipient : 'Pat' },
-               { id : 16, class : 1, user : 16, granted : 1492538418, email : '264@example.com', recipient : 'Quigly' },
+               { id : 16, class : 1, user : 16, granted : 1392538418, email : '264@example.com', recipient : 'Quigly' },
                { id : 17, class : 2, user : 17, granted : 1422346105, email : '851@example.com', recipient : 'Ruth' },
                { id : 18, class : 3, user : 18, granted : 1467332971, email : '137@example.com', recipient : 'Sean' },
                { id : 19, class : 4, user : 19, granted : 1423324268, email : '834@example.com', recipient : 'Tom' },
@@ -175,7 +175,7 @@ function insertEntries2() {
                { id : 23, class : 3, user : 23, granted : 1483525916, email : '426@example.com', recipient : 'Xander' },
                { id : 24, class : 4, user : 24, granted : 1477207573, email : '668@example.com', recipient : 'Yvonne' },
                { id : 25, class : 5, user : 25, granted : 1426207320, email : '603@example.com', recipient : 'Zoe' },
-               { id : 26, class : 1, user : 26, granted : 1497288004, email : '230@example.com', recipient : 'Amos' },
+               { id : 26, class : 1, user : 26, granted : 1397288004, email : '230@example.com', recipient : 'Amos' },
                { id : 27, class : 2, user : 1,  granted : 1456530995, email : '591@example.com', recipient : 'Bert' },
                { id : 28, class : 3, user : 2,  granted : 1446761909, email : '757@example.com', recipient : 'Courtney' },
                { id : 29, class : 4, user : 3,  granted : 1406836552, email : '732@example.com', recipient : 'Donald' },
@@ -184,7 +184,7 @@ function insertEntries2() {
                { id : 32, class : 2, user : 6,  granted : 1416811446, email : '591@example.com', recipient : 'Gertrude' },
                { id : 33, class : 3, user : 7,  granted : 1466207251, email : '757@example.com', recipient : 'Holly' },
                { id : 34, class : 4, user : 8,  granted : 1476841900, email : '732@example.com', recipient : 'Ida' },
-               { id : 35, class : 5, user : 9,  granted : 1496684942, email : '800@example.com', recipient : 'Jim' },
+               { id : 35, class : 5, user : 9,  granted : 1396684942, email : '800@example.com', recipient : 'Jim' },
                { id : 36, class : 1, user : 10, granted : 1467619283, email : '230@example.com', recipient : 'Khaled' },
                { id : 37, class : 2, user : 11, granted : 1428029153, email : '591@example.com', recipient : 'Linda' },
                { id : 38, class : 3, user : 12, granted : 1408775327, email : '757@example.com', recipient : 'Mitch' },

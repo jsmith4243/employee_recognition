@@ -126,7 +126,7 @@ exports.passwordresetpost = function(req, res, next) {
               var salt = crypto.randomBytes(128).toString('base64');
               stmt = db.prepare('UPDATE users SET password = ?, salt = ?, resethash = NULL, resetdate = NULL WHERE id = ?');
               stmt.run(hashPassword(password, salt), salt, user['id'], function(err, row) {
-                res.render('message', { title: 'Password Reset', text: 'Password successfully reset. You may now log in.', next: is_admin ? '/administration' : '/' });  
+                res.render('message', { title: 'Password Reset', text: 'Password successfully reset. You may now log in.', next: is_admin === '1' ? '/administration' : '/' });  
               });
             }
           }

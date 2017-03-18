@@ -216,7 +216,7 @@ exports.edituser = function(req, res, next) {
   var name = req.body.name;
   var division = req.body.division;
   var department = req.body.department;
-  var password = req.body.password;
+  var password = req.body.newpassword;
 
   if (req.file) {
     var updateSignature = db.prepare('UPDATE users SET signature = ?, mimetype = ? WHERE id = ?');
